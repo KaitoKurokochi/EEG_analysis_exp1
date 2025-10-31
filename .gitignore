@@ -1,0 +1,9 @@
+*.asv
+
+/rawdata/*
+!/rawdata/.gitkeep
+/results/*
+!/results/.gitkeep
+
+
+.DS_Store
