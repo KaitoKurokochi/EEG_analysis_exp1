@@ -1,44 +1,38 @@
 %% default 
-data_path = "C:\Users\kaito\workspace\2025_exp1\EEG_analysis_exp1\rawdata\nov7"; % adjust for each participants 
-result_path = "C:\Users\kaito\workspace\2025_exp1\EEG_analysis_exp1\result\nov7"; % adjust for each participants 
+data_path = "C:\Users\kaito\workspace\2025_exp1\EEG_analysis_exp1\rawdata\exp11"; % adjust for each participants 
+result_path = "C:\Users\kaito\workspace\2025_exp1\EEG_analysis_exp1\result\exp11"; % adjust for each participants 
 
 %% read data 
-% EEG data
 vhdr_list = dir(fullfile(data_path, '*.vhdr'));
-assert(~isempty(vhdr_list), 'No .vhdr files in: %s', data_path);
-names = {vhdr_list.name};
-datasets = fullfile(data_path, names);
+datasets = fullfile(data_path, {vhdr_list.name}); 
+alldata = cell(1, numel(datasets));
 
-cfg = [];
-cfg.continuous = 'yes';
-cfg.dataset = datasets;
-data = ft_preprocessing(cfg);
+for i = 1:numel(datasets)
+    cfg = [];
+    cfg.dataset = datasets{i};
+    cfg.continuous = 'yes';
+    % epoching
+    cfg.trialdef.eventtype = 'Stimulus';
+    cfg.trialdef.eventvalue = {'s2'};
+    cfg.trialdef.prestim = 1.5;
+    cfg.trialdef.poststim = 2.0;
+    
+    cfg = ft_definetrial(cfg);
+    data = ft_preprocessing(cfg);
 
-%% events 
-target_triggers = {'s1','s2','s4','s32'};
-per_file_counts = zeros(numel(names), numel(target_triggers));
+    event = ft_read_event(datasets{i});
+    data.cfg.event = event;
 
-for fi = 1:numel(names)
-    vhdr_path = fullfile(data_path, names{fi});
-    ev = ft_read_event(vhdr_path);
-
-    event_values = {ev.value};
-
-    for ti = 1:numel(target_triggers)
-        per_file_counts(fi, ti) = sum(strcmp(event_values, target_triggers{ti}));
-    end
+    alldata{i} = data;
 end
 
-T_file = table(string(names)', per_file_counts(:,1), per_file_counts(:,2), ...
-    per_file_counts(:,3), per_file_counts(:,4), ...
-    'VariableNames', {'vhdr','s1','s2','s4','s32'});
 
-disp('--- Trigger counts per .vhdr file ---');
-disp(T_file);
-
-%% data shower 
-cfgv = [];
-cfgv.viewmode  = 'butterfly';
-cfgv.blocksize = 10;
-cfgv.plotevents = 'yes';
-ft_databrowser(cfgv, data);
+%% data visualizer 
+for i = 1:numel(alldata)
+    cfgv = [];
+    cfgv.viewmode   = 'butterfly'; 
+    cfgv.plotevents = 'yes'; 
+    cfgv.channel    = {'Cz'};
+    ft_databrowser(cfgv, alldata{i});
+    disp('end');
+end
