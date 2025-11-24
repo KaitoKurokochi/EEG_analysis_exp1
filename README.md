@@ -13,3 +13,5 @@ cite: https://www.fieldtriptoolbox.org/tutorial/sensor/preprocessing_erp/
 cite: https://www.fieldtriptoolbox.org/tutorial/preproc/continuous/
 - FIR filter 
 - 1-30Hz
+
+## ICA 

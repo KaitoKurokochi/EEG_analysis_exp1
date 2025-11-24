@@ -29,11 +29,19 @@ cfg_trial_info = ft_definetrial(cfg);
 disp('--- clipping ---');
 data_clipped = ft_redefinetrial(cfg_trial_info, data_filtered);
 
-%% data browsing 
-cfg = [];
-cfg.channel = 'Cz';
-cfg.ylim = [-1.0 1.0];
-ft_databrowser(cfg, data_clipped);
+%% ICA 
+% perform the independent component analysis (i.e., decompose the data)
+cfg        = [];
+cfg.method = 'runica'; % this is the default and uses the implementation from EEGLAB
+
+comp = ft_componentanalysis(cfg, data_clipped);
+
+%% check IC 
+figure;
+cfg = []; 
+cfg.component = [1:10];
+cfg.layout    = 'easycapM11.mat'; % specify the layout file that should be used for plotting
+ft_topoplotIC(cfg, comp);
 
 disp("finish processing")
 
