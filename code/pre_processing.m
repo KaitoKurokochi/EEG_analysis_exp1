@@ -1,41 +1,38 @@
 %% define path  
-data_path = "C:\Users\kaito\workspace\2025_exp1\EEG_analysis_exp1\rawdata\nov11"; % adjust for each participants 
-result_path = "C:\Users\kaito\workspace\2025_exp1\EEG_analysis_exp1\result\nov11"; % adjust for each participants 
-
-%% define vhdr list
-% EEG data
-vhdr_list = dir(fullfile(data_path, '*.vhdr'));
-assert(~isempty(vhdr_list), 'No .vhdr files in: %s', data_path);
+vhdr_file = "C:\Users\kaito\workspace\2025_exp1\EEG_analysis_exp1\rawdata\nov12\Kurokochi_Exp1_2025-11-25_11-09-15.vhdr"; % adjust for each participants 
+result_path = "C:\Users\kaito\workspace\2025_exp1\EEG_analysis_exp1\result\nov12"; % adjust for each participants 
 
 %% check the dataset
 cfg = [];
-cfg.dataset             = fullfile(data_path, vhdr_list(5).name);
+cfg.dataset             = vhdr_file;
 cfg.trialdef.eventtype = '?';
 dummy                   = ft_definetrial(cfg);
 
-%% load data and clipping 
+%% read data and filtering 
+cfg = [];
+cfg.bpfilter = 'yes';
+cfg.bpfilttype = 'fir';
+cfg.bpfreq     = [1 30];
+cfg.continuous  = 'yes'; 
+cfg.dataset = vhdr_file;
+
+disp('--- filtering ---')
+data_filtered = ft_preprocessing(cfg);
+
+%% trial def and clipping
 cfg = [];
 cfg.trialfun = 'mytrialfun';
+cfg.headerfile = vhdr_file;
+cfg_trial_info = ft_definetrial(cfg);
 
-data_sets = cell(1, numel(vhdr_list));
-for i = 1:numel(vhdr_list)
-    cfg0 = cfg;
-    cfg0.dataset = fullfile(data_path, vhdr_list(i).name);
-    cfg0 = ft_definetrial(cfg0);
-    data_sets{i} = ft_preprocessing(cfg0);
-end
+disp('--- clipping ---');
+data_clipped = ft_redefinetrial(cfg_trial_info, data_filtered);
 
-%% filtering 
-cfg_flt = [];
-cfg_flt.hpfilttype = 'fir';
-cfg_flt.lpfilter = 'yes';
-cfg_flt.lpfreq = 30;
-cfg_flt.hpfilter = 'yes';
-cfg_flt.hpfreq= 1;
-
-for i = 1:numel(vhdr_list)
-    data_sets{i} = ft_preprocessing(cfg_flt, data_sets{i});
-end
+%% data browsing 
+cfg = [];
+cfg.channel = 'Cz';
+cfg.ylim = [-1.0 1.0];
+ft_databrowser(cfg, data_clipped);
 
 disp("finish processing")
 
