@@ -1,6 +1,7 @@
-%% define path  
-vhdr_file = "C:\Users\kaito\workspace\2025_exp1\EEG_analysis_exp1\rawdata\nov12\Kurokochi_Exp1_2025-11-25_11-09-15.vhdr"; % adjust for each participants 
-result_path = "C:\Users\kaito\workspace\2025_exp1\EEG_analysis_exp1\result\nov12"; % adjust for each participants 
+%% define path - adjust for each participant or segment
+define_path;
+vhdr_file = fullfile(prj_path, "rawdata/nov12/Kurokochi_Exp1_2025-11-25_11-09-15.vhdr");
+result_path = fullfile(prj_path, "result/nov12");
 
 %% check the dataset
 cfg = [];

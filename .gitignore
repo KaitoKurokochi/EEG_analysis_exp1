@@ -1,4 +1,5 @@
 *.asv
+/code/define_path.m
 
 /rawdata/*
 !/rawdata/.gitkeep
