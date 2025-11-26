@@ -34,14 +34,7 @@ data_clipped = ft_redefinetrial(cfg_trial_info, data_filtered);
 cfg        = [];
 cfg.method = 'runica'; % this is the default and uses the implementation from EEGLAB
 
+disp('--- runica ---');
 comp = ft_componentanalysis(cfg, data_clipped);
 
-%% check IC 
-figure;
-cfg = []; 
-cfg.component = [1:10];
-cfg.layout    = 'easycapM11.mat'; % specify the layout file that should be used for plotting
-ft_topoplotIC(cfg, comp);
-
-disp("finish processing")
 
