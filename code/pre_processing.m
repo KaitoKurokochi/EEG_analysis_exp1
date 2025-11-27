@@ -44,9 +44,9 @@ cfg = [];
 cfg.component = 1:20;       % specify the component(s) that should be plotted
 cfg.layout    = 'easycapM11.mat'; % specify the layout file that should be used for plotting
 % cfg.comment   = 'no';
-ft_topoplotIC(cfg, comp)
+ft_topoplotIC(cfg, comp);
 
 cfg = [];
 cfg.layout = 'easycapM11.mat'; % specify the layout file that should be used for plotting
 cfg.viewmode = 'component';
-ft_databrowser(cfg, comp)
+ft_databrowser(cfg, comp);
