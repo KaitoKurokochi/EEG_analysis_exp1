@@ -16,3 +16,8 @@ link: https://www.fieldtriptoolbox.org/tutorial/preproc/continuous/
 
 ## ICA 
 link: https://www.fieldtriptoolbox.org/example/preproc/ica_eog/
+
+## IC-Label
+link: https://www.fieldtriptoolbox.org/example/preproc/ica_eog/#identify-the-artifacts
+
+cite for selection of noise labels: https://doi.org/10.1016/j.jneumeth.2015.01.030

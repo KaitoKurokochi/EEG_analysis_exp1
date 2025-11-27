@@ -37,4 +37,16 @@ cfg.method = 'runica'; % this is the default and uses the implementation from EE
 disp('--- runica ---');
 comp = ft_componentanalysis(cfg, data_clipped);
 
+%% Check IC-Label
+% plot the components for visual inspection
+figure
+cfg = [];
+cfg.component = 1:20;       % specify the component(s) that should be plotted
+cfg.layout    = 'easycapM11.mat'; % specify the layout file that should be used for plotting
+% cfg.comment   = 'no';
+ft_topoplotIC(cfg, comp)
 
+cfg = [];
+cfg.layout = 'easycapM11.mat'; % specify the layout file that should be used for plotting
+cfg.viewmode = 'component';
+ft_databrowser(cfg, comp)
