@@ -32,7 +32,9 @@ data = ft_redefinetrial(cfg, data);
 %% ICA 
 % perform the independent component analysis (i.e., decompose the data)
 cfg        = [];
+cfg.channel = {'all', '-EOG'};
 cfg.method = 'runica'; % this is the default and uses the implementation from EEGLAB
+cfg.runica.pca = 20; % N of comps
 
 disp('--- runica ---');
 comp = ft_componentanalysis(cfg, data);
@@ -42,7 +44,6 @@ comp = ft_componentanalysis(cfg, data);
 figure
 cfg = [];
 cfg.component = 1:20;       % specify the component(s) that should be plotted
-cfg.runica.pca = 20; % N of comps
 cfg.layout    = 'easycapM11.mat'; % specify the layout file that should be used for plotting
 % cfg.comment   = 'no';
 ft_topoplotIC(cfg, comp);
@@ -56,4 +57,3 @@ ft_databrowser(cfg, comp);
 cfg = [];
 cfg.component = []; % to be removed component(s)
 data = ft_rejectcomponent(cfg, comp, data);
-

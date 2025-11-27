@@ -16,6 +16,8 @@ link: https://www.fieldtriptoolbox.org/tutorial/preproc/continuous/
 
 ## ICA 
 link: https://www.fieldtriptoolbox.org/example/preproc/ica_eog/
+- N of pca: 20 
+- channel: remove EOG
 
 ## IC-Label
 link: https://www.fieldtriptoolbox.org/example/preproc/ica_eog/#identify-the-artifacts
