@@ -51,3 +51,9 @@ cfg = [];
 cfg.layout = 'easycapM11.mat'; % specify the layout file that should be used for plotting
 cfg.viewmode = 'component';
 ft_databrowser(cfg, comp);
+
+%% remove noisy comps 
+cfg = [];
+cfg.component = []; % to be removed component(s)
+data = ft_rejectcomponent(cfg, comp, data);
+
