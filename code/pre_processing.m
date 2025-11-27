@@ -1,6 +1,7 @@
 %% define path - adjust for each participant or segment
 define_path;
 vhdr_file = fullfile(prj_path, "rawdata/nov12/Kurokochi_Exp1_2025-11-25_11-09-15.vhdr");
+sequence_file = fullfile(prj_path, "rawdata/nov12/sequence_1.csv");
 result_path = fullfile(prj_path, "result/nov12");
 
 %% check the dataset
@@ -24,6 +25,7 @@ data = ft_preprocessing(cfg);
 cfg = [];
 cfg.trialfun = 'mytrialfun';
 cfg.headerfile = vhdr_file;
+cfg.sequencefile = sequence_file;
 cfg = ft_definetrial(cfg);
 
 disp('--- clipping ---');
