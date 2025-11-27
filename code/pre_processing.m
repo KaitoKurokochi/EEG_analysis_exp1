@@ -1,8 +1,5 @@
-%% define path - adjust for each participant or segment
+%% define path
 define_path;
-vhdr_file = fullfile(prj_path, "rawdata/nov12/Kurokochi_Exp1_2025-11-25_11-09-15.vhdr");
-sequence_file = fullfile(prj_path, "rawdata/nov12/sequence_1.csv");
-result_path = fullfile(prj_path, "result/nov12");
 
 %% check the dataset
 cfg = [];
