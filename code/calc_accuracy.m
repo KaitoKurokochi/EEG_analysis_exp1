@@ -1,0 +1,30 @@
+define_path;
+vhdr_file = fullfile(prj_path, "rawdata/nov12/Kurokochi_Exp1_2025-11-25_11-09-15.vhdr");
+sequence_file = fullfile(prj_path, "rawdata/nov12/sequence_1.csv");
+
+% read data 
+cfg = [];
+cfg.trialfun = 'mytrialfun';
+cfg.headerfile = vhdr_file;
+cfg.sequencefile = sequence_file;
+cfg = ft_definetrial(cfg);
+
+task_res = cfg.trl(:, 4);
+
+n_trial = 0;
+n_correct = 0;
+
+for i = 1:length(task_res)
+    if task_res(i) == -1
+        continue;
+    end
+
+    n_trial = n_trial+1;
+    if task_res(i) > 0
+        n_correct = n_correct+1;
+    end
+end
+
+disp(['n_trial: ' num2str(n_trial) ', n_correct: ' num2str(n_correct)]);
+disp(['accuracy: ' num2str(n_correct/n_trial)]);
+

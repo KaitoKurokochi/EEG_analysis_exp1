@@ -4,6 +4,18 @@ This repository is for analysis of EEG in Exp1.
 # Dependency 
 - You have to have `define_path.m` in `code` directory. In this code, `prj_path` should be defined. 
 
+# task result 
+recorded in `cfg.trl` or `data.trialinfo`
+Accuracy can be calculated by `calc_accuracy.m`
+
+signals are 
+- -1: missing data 
+- 0: incorrect 
+- 1: ff correct 
+- 2: fc correct 
+- 3: cf correct 
+- 4: cc correct 
+
 # flow of pre-processing
 ## clipping 
 link: https://www.fieldtriptoolbox.org/tutorial/sensor/preprocessing_erp/

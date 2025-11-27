@@ -7,6 +7,7 @@ T_sequence = readtable(cfg.sequencefile);
 %% 
 EVsample   = [event.sample]';
 EVvalue    = {event.value}';
+keys = T_sequence{:, 'Key'};
 
 % select the target stimuli (check in dummy)
 s2_ids = find(strcmp('s2', EVvalue)==1);
@@ -57,6 +58,46 @@ for i = 1:num_trials
 
         if s2_ev <= s4_ev && s4_ev <= s32_ev
             task(i) = 1;
+        end
+    end
+end
+
+% check if the task correct/incorrect 
+for i = 1:num_trials
+    if task(i) == -1
+        continue;
+    end
+
+    key = keys{i, 1};
+    if strcmp(key, 'ff')
+        if task(i) == 1
+            task(i) = 1; % ff correct 
+        else 
+            task(i) = 0; % incorrect
+        end
+    end
+    
+    if strcmp(key, 'fc') 
+        if task(i) == 1
+            task(i) = 0; % incorrect
+        else 
+            task(i) = 2; % fc correct 
+        end
+    end
+    
+    if strcmp(key, 'cf')
+        if task(i) == 1
+            task(i) = 0; % incorrect
+        else 
+            task(i) = 3; % cf correct
+        end
+    end
+
+    if strcmp(key, 'cc')
+        if task(i) == 1
+            task(i) = 4; % cc correct
+        else 
+            task(i) = 0; % incorrect
         end
     end
 end

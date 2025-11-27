@@ -19,7 +19,7 @@ cfg.continuous  = 'yes';
 cfg.dataset = vhdr_file;
 
 disp('--- filtering ---')
-data_flt = ft_preprocessing(cfg);
+data = ft_preprocessing(cfg);
 
 %% trial def and clipping
 cfg = [];
@@ -29,7 +29,7 @@ cfg.sequencefile = sequence_file;
 cfg = ft_definetrial(cfg);
 
 disp('--- clipping ---');
-data = ft_redefinetrial(cfg, data_flt);
+data = ft_redefinetrial(cfg, data);
 
 %% ICA 
 % perform the independent component analysis (i.e., decompose the data)
