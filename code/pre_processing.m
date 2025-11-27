@@ -18,16 +18,16 @@ cfg.continuous  = 'yes';
 cfg.dataset = vhdr_file;
 
 disp('--- filtering ---')
-data_filtered = ft_preprocessing(cfg);
+data = ft_preprocessing(cfg);
 
 %% trial def and clipping
 cfg = [];
 cfg.trialfun = 'mytrialfun';
 cfg.headerfile = vhdr_file;
-cfg_trial_info = ft_definetrial(cfg);
+cfg = ft_definetrial(cfg);
 
 disp('--- clipping ---');
-data_clipped = ft_redefinetrial(cfg_trial_info, data_filtered);
+data = ft_redefinetrial(cfg, data);
 
 %% ICA 
 % perform the independent component analysis (i.e., decompose the data)
@@ -35,13 +35,14 @@ cfg        = [];
 cfg.method = 'runica'; % this is the default and uses the implementation from EEGLAB
 
 disp('--- runica ---');
-comp = ft_componentanalysis(cfg, data_clipped);
+comp = ft_componentanalysis(cfg, data);
 
 %% Check IC-Label
 % plot the components for visual inspection
 figure
 cfg = [];
 cfg.component = 1:20;       % specify the component(s) that should be plotted
+cfg.runica.pca = 20; % N of comps
 cfg.layout    = 'easycapM11.mat'; % specify the layout file that should be used for plotting
 % cfg.comment   = 'no';
 ft_topoplotIC(cfg, comp);
