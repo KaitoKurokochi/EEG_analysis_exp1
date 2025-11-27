@@ -1,6 +1,4 @@
 define_path;
-vhdr_file = fullfile(prj_path, "rawdata/nov12/Kurokochi_Exp1_2025-11-25_11-09-15.vhdr");
-sequence_file = fullfile(prj_path, "rawdata/nov12/sequence_1.csv");
 
 % read data 
 cfg = [];
