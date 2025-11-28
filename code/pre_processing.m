@@ -56,3 +56,6 @@ ft_databrowser(cfg, comp);
 cfg = [];
 cfg.component = []; % to be removed component(s)
 data = ft_rejectcomponent(cfg, comp, data);
+
+%% data saving
+save(result_file, 'data', '-v7.3');

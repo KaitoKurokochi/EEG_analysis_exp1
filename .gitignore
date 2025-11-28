@@ -3,7 +3,7 @@
 
 /rawdata/*
 !/rawdata/.gitkeep
-/results/*
+/result/*
 !/results/.gitkeep
 
 
