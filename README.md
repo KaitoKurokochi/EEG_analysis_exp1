@@ -36,3 +36,6 @@ link: https://www.fieldtriptoolbox.org/example/preproc/ica_eog/#identify-the-art
 
 ## remove noise comps
 cite for selection of noise labels: https://doi.org/10.1016/j.jneumeth.2015.01.030
+
+## save data 
+- filename: `seg{x}_v1.mat`
