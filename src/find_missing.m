@@ -1,3 +1,7 @@
+% input: need to set participant's name, vhdrfile name, sequencefile name, savefile name
+% - rawdata/{participant}/*.eeg, *.vhdr, *.vmrk
+% - rawdata/{participant}/sequence_x.csv
+
 define_path;
 
 %% check the dataset

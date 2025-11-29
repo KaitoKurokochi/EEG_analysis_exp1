@@ -1,3 +1,10 @@
+% input: need to set participant's name, vhdrfile name, sequencefile name, savefile name
+% - rawdata/{participant}/*.eeg, *.vhdr, *.vmrk
+% - rawdata/{participant}/sequence_x.csv
+% 
+% output 
+% - result/{participant}/seg{i}_v1.mat
+
 %% define path
 define_path;
 
