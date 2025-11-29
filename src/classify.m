@@ -1,6 +1,8 @@
-% this code classifies the trials based on the trialinfo 
-% input: all segments of each participants 
-% output: trials for each conditions 
+% input: need to set participant's name, sequencefile name
+% - result/{participant}/*_v1.mat
+% 
+% output 
+% - result/{participant}/v2.mat 
 
 define_path;
 
