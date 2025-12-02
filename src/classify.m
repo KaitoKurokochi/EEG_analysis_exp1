@@ -8,12 +8,12 @@ define_path;
 
 %% collect datasets
 num_type = 4;
-files = dir(fullfile(result_participant_path, '*_v1.mat'));
+files = dir(fullfile(v1_dir, '*_v1.mat'));
 num_seg = numel(files);
 dataset = cell(num_seg, 1);
 
 for i = 1:num_seg
-    load(fullfile(result_participant_path, files(i).name));
+    load(fullfile(v1_dir, files(i).name));
     dataset{i} = data;
 end
 
@@ -37,4 +37,4 @@ for i = 1:num_seg
     end
 end
 
-save(classified_file_name, 'classified_data', '-v7.3');
+save(v2_path, 'classified_data', '-v7.3');

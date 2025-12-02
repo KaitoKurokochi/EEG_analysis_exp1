@@ -6,7 +6,7 @@ define_path;
 
 %% check the dataset
 cfg = [];
-cfg.dataset             = vhdr_file;
+cfg.dataset             = vhdr_path;
 cfg.trialdef.eventtype = '?';
 cfg                   = ft_definetrial(cfg);
 
