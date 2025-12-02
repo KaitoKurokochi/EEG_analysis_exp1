@@ -10,7 +10,7 @@ define_path;
 
 %% check the dataset
 cfg = [];
-cfg.dataset             = vhdr_file;
+cfg.dataset             = vhdr_path;
 cfg.trialdef.eventtype = '?';
 dummy                   = ft_definetrial(cfg);
 
@@ -20,7 +20,7 @@ cfg.bpfilter = 'yes';
 cfg.bpfilttype = 'fir';
 cfg.bpfreq     = [1 30];
 cfg.continuous  = 'yes'; 
-cfg.dataset = vhdr_file;
+cfg.dataset = vhdr_path;
 
 disp('--- filtering ---')
 data = ft_preprocessing(cfg);
@@ -28,8 +28,8 @@ data = ft_preprocessing(cfg);
 %% trial def and clipping
 cfg = [];
 cfg.trialfun = 'mytrialfun';
-cfg.headerfile = vhdr_file;
-cfg.sequencefile = sequence_file;
+cfg.headerfile = vhdr_path;
+cfg.sequencefile = sequence_path;
 cfg = ft_definetrial(cfg);
 
 disp('--- clipping ---');
@@ -61,8 +61,8 @@ ft_databrowser(cfg, comp);
 
 %% remove noisy comps 
 cfg = [];
-cfg.component = []; % to be removed component(s)
+cfg.component = [1 2 3 13 14 15 9 7 8]; % to be removed component(s)
 data = ft_rejectcomponent(cfg, comp, data);
 
 %% data saving
-save(result_file, 'data', '-v7.3');
+save(v1_path, 'data', '-v7.3');

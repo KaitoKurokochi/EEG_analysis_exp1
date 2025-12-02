@@ -7,8 +7,8 @@ define_path;
 % read data 
 cfg = [];
 cfg.trialfun = 'mytrialfun';
-cfg.headerfile = vhdr_file;
-cfg.sequencefile = sequence_file;
+cfg.headerfile = vhdr_path;
+cfg.sequencefile = sequence_path;
 cfg = ft_definetrial(cfg);
 
 task_res = cfg.trl(:, 4);
