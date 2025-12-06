@@ -1,0 +1,1 @@
+my_autoica(data)
