@@ -2,7 +2,8 @@
 % - rawdata/{participant}/*.eeg, *.vhdr, *.vmrk
 % - rawdata/{participant}/sequence_x.csv
 
-define_path;
+vhdr_path = "C:\Users\kaito\workspace\2025_exp1\EEG_analysis_exp1\rawdata\nov12\Kurokochi_Exp1_2025-11-25_12-06-02.vhdr";
+sequence_path = "C:\Users\kaito\workspace\2025_exp1\EEG_analysis_exp1\rawdata\nov12\sequence_5.csv";
 
 % read data 
 cfg = [];
@@ -11,6 +12,7 @@ cfg.headerfile = vhdr_path;
 cfg.sequencefile = sequence_path;
 cfg = ft_definetrial(cfg);
 
+%%
 task_res = cfg.trl(:, 4);
 
 n_trial = 0;

@@ -22,7 +22,7 @@ endsample = EVsample(s2_ids) + PostTrig;
 offset = -PreTrig*ones(size(endsample));
 
 % devide task
-if num_trials ~= height(T_sequence)
+if num_trials < height(T_sequence)
     error('the num of s2 and sequence is not equal');
 end 
 
@@ -75,30 +75,26 @@ for i = 1:num_trials
         else 
             task(i) = 0; % incorrect
         end
-    end
-    
-    if strcmp(key, 'fc') 
+    elseif strcmp(key, 'fc')
         if task(i) == 1
             task(i) = 0; % incorrect
         else 
             task(i) = 2; % fc correct 
         end
-    end
-    
-    if strcmp(key, 'cf')
+    elseif strcmp(key, 'cf')
         if task(i) == 1
             task(i) = 0; % incorrect
         else 
             task(i) = 3; % cf correct
         end
-    end
-
-    if strcmp(key, 'cc')
+    elseif strcmp(key, 'cc')
         if task(i) == 1
             task(i) = 4; % cc correct
         else 
             task(i) = 0; % incorrect
         end
+    else 
+        task(i) = -1;
     end
 end
 

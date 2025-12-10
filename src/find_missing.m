@@ -2,7 +2,8 @@
 % - rawdata/{participant}/*.eeg, *.vhdr, *.vmrk
 % - rawdata/{participant}/sequence_x.csv
 
-define_path;
+vhdr_path = "C:\Users\kaito\workspace\2025_exp1\EEG_analysis_exp1\rawdata\nov9\Kurokochi_Exp1_2025-11-05_10-45-34.vhdr";
+sequence_path = "C:\Users\kaito\workspace\2025_exp1\EEG_analysis_exp1\rawdata\nov9\sequence_1.csv";
 
 %% check the dataset
 cfg = [];
