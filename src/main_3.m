@@ -1,3 +1,6 @@
+% main_3: group concat
+% v2 -> v3 (concat by group) 
+
 % input: all v2 files
 % 
 % output 
