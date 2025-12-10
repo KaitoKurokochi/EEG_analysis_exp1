@@ -1,10 +1,6 @@
-% input: need to set participant's name, sequencefile name
-% - result/{participant}/*_v1.mat
-% 
-% output 
-% - result/{participant}/v2.mat 
-
-define_path;
+% main_2: participants base processing
+% v1 -> v2 (classified based on label)
+define_prj_path;
 
 %% collect datasets
 num_type = 4;
