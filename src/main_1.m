@@ -14,3 +14,4 @@ id = strcat(pname, "-", "1");
 
 %% save 
 % save(fullfile(v1_path, 'seg1_v1.mat'), 'data', '-v7.3');
+% save(fullfile(v1_path, "seg1_ic_result.mat"), 'ica_result', '-v7.3');
