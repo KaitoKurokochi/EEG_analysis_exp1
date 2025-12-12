@@ -15,7 +15,6 @@ function my_freq_band_topomap(spectr)
     cfg = [];
     cfg.layout      = 'easycapM11.mat';
     cfg.channel     = {'all', '-EOG'};
-    cfg.latency     = [0 0.57]; % add time range
     cfg.parameter   = 'powspctrm'; % included in the result of ft_freqanalysis
     cfg.interactive = 'no';
     cfg.comment     = 'no';
