@@ -12,6 +12,8 @@ id = strcat(pname, "-", "1");
 %% for each participants 
 [data, ica_result] = pre_processing(vhdr_path, sequence_path, id);
 
+%% calc spectrum 
+spectr = my_calc_spectr(data);
+
 %% save 
 % save(fullfile(v1_path, 'seg1_v1.mat'), 'data', '-v7.3');
-% save(fullfile(v1_path, "seg1_ic_result.mat"), 'ica_result', '-v7.3');
