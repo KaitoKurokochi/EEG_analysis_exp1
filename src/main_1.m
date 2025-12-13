@@ -3,17 +3,35 @@
 
 %% define path
 set_path;
-pname = "nov12";
-vhdr_path = "C:\Users\kaito\workspace\2025_exp1\EEG_analysis_exp1\rawdata\nov12\Kurokochi_Exp1_2025-11-25_11-09-15.vhdr";
-sequence_path = "C:\Users\kaito\workspace\2025_exp1\EEG_analysis_exp1\rawdata\nov12\sequence_1.csv";
-v1_path = "C:\Users\kaito\workspace\2025_exp1\EEG_analysis_exp1\result\nov12";
-id = strcat(pname, "-", "1"); 
+groups = {'nov'};
 
-%% for each participants 
-[data, ica_result] = pre_processing(vhdr_path, sequence_path, id);
+for g = 1:length(groups)
+    for i = 9:12
+        pname = [groups{g}, num2str(i)];
+        data_dir = fullfile(prj_dir, 'rawdata', pname);
+        res_dir = fullfile(prj_dir, 'result', pname);
+        vhdrs = dir(fullfile(data_dir, '*.vhdr'));
+        
+        for v = 1:length(vhdrs)
+            vhdr_path = fullfile(data_dir, vhdrs(v).name);
+            sequence_path = fullfile(data_dir, ['sequence_', num2str(v), '.csv']);
+            id = [pname, '-', num2str(v)];
 
-%% calc spectrum 
-spectr = my_calc_spectr(data);
+            disp(['--- id: ', id, ', start pre-processing ---']);
+            
+            % ica 
+            [data, cleaned_data, ica_result] = pre_processing(vhdr_path, sequence_path, id);
 
-%% save 
-% save(fullfile(v1_path, 'seg1_v1.mat'), 'data', '-v7.3');
+            % spectrum 
+            spectr1 = my_calc_spectr(data);
+            spectr2 = my_calc_spectr(cleaned_data);
+
+            % save 
+            save(fullfile(res_dir, ['v0_', num2str(v), '.mat']), 'data', '-v7.3');
+            save(fullfile(res_dir, ['v1_', num2str(v), '.mat']), 'cleaned_data', '-v7.3');
+            save(fullfile(res_dir, ['v0_', num2str(v), '_spectrum.mat']), 'spectr1', '-v7.3');
+            save(fullfile(res_dir, ['v1_', num2str(v), '_spectrum.mat']), 'spectr2', '-v7.3');      
+        end
+    end
+end
+

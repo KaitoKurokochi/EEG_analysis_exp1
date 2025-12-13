@@ -1,4 +1,4 @@
-function [cleaned_data, ica_result] = pre_processing(vhdr_path, sequence_path, id)
+function [data, cleaned_data, ica_result] = pre_processing(vhdr_path, sequence_path, id)
 % eeg pre_processing file
 % 1. read data and filtering 
 % 2. define trial 
