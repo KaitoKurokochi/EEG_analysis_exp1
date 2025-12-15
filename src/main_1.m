@@ -3,10 +3,10 @@
 
 %% define path
 set_path;
-groups = {'nov'};
+groups = {'nov', 'exp'};
 
 for g = 1:length(groups)
-    for i = 9:12
+    for i = 1:5
         pname = [groups{g}, num2str(i)];
         data_dir = fullfile(prj_dir, 'rawdata', pname);
         res_dir = fullfile(prj_dir, 'result', pname);
@@ -27,10 +27,10 @@ for g = 1:length(groups)
             spectr2 = my_calc_spectr(cleaned_data);
 
             % save 
-            save(fullfile(res_dir, ['v0_', num2str(v), '.mat']), 'data', '-v7.3');
-            save(fullfile(res_dir, ['v1_', num2str(v), '.mat']), 'cleaned_data', '-v7.3');
-            save(fullfile(res_dir, ['v0_', num2str(v), '_spectrum.mat']), 'spectr1', '-v7.3');
-            save(fullfile(res_dir, ['v1_', num2str(v), '_spectrum.mat']), 'spectr2', '-v7.3');      
+            save(fullfile(res_dir, ['v0_', num2str(v), '_ica2.mat']), 'data', '-v7.3');
+            save(fullfile(res_dir, ['v1_', num2str(v), '_ica2.mat']), 'cleaned_data', '-v7.3');
+            save(fullfile(res_dir, ['v0_', num2str(v), '_spectrum_ica2.mat']), 'spectr1', '-v7.3');
+            save(fullfile(res_dir, ['v1_', num2str(v), '_spectrum_ica2.mat']), 'spectr2', '-v7.3');           
         end
     end
 end
