@@ -1,4 +1,4 @@
-% main_1: segment-base processing 
+% main_1: segment-base pre-processing
 % -> v1 (pre-processed)
 
 %% define path
@@ -23,14 +23,14 @@ for g = 1:length(groups)
             [data, cleaned_data, ica_result] = pre_processing(vhdr_path, sequence_path, id);
 
             % spectrum 
-            spectr1 = my_calc_spectr(data);
-            spectr2 = my_calc_spectr(cleaned_data);
+            spectr0 = my_calc_spectr(data);
+            spectr1 = my_calc_spectr(cleaned_data);
 
             % save 
             save(fullfile(res_dir, ['v0_', num2str(v), '_ica2.mat']), 'data', '-v7.3');
             save(fullfile(res_dir, ['v1_', num2str(v), '_ica2.mat']), 'cleaned_data', '-v7.3');
-            save(fullfile(res_dir, ['v0_', num2str(v), '_spectrum_ica2.mat']), 'spectr1', '-v7.3');
-            save(fullfile(res_dir, ['v1_', num2str(v), '_spectrum_ica2.mat']), 'spectr2', '-v7.3');           
+            save(fullfile(res_dir, ['v0_', num2str(v), '_spectrum_ica2.mat']), 'spectr0', '-v7.3');
+            save(fullfile(res_dir, ['v1_', num2str(v), '_spectrum_ica2.mat']), 'spectr1', '-v7.3');           
         end
     end
 end
