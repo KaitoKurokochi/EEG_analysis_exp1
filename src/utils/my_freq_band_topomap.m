@@ -1,4 +1,4 @@
-function my_freq_band_topomap(spectr)
+function [fig] = my_freq_band_topomap(spectr)
 % input: 
 %     spectr(struct): EEG spectrum data in fieldtrip format
     
@@ -23,7 +23,7 @@ function my_freq_band_topomap(spectr)
     % cfg.marker       = 'labels';  % show channel name(string) on the graph 
     % cfg.markerfontsize = 8; 
 
-    figure('Name','Topographies by band (Individually Fixed Color Scale)');
+    fig = figure('Name','Topographies by band (Individually Fixed Color Scale)');
     for k = 1:size(bands,1)
         subplot(2,2,k); % order in 2x2
         cfg.xlim = bands{k,1}; % xlim = frequecy band
