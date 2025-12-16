@@ -1,4 +1,4 @@
-function [data, cleaned_data, ica_result] = pre_processing(vhdr_path, sequence_path, id)
+function [data, cleaned_data1, cleaned_data2, ica_result1, ica_result2] = pre_processing(vhdr_path, sequence_path, id, trialfun)
 % eeg pre_processing file
 % 1. read data and filtering 
 % 2. define trial 
@@ -26,8 +26,7 @@ function [data, cleaned_data, ica_result] = pre_processing(vhdr_path, sequence_p
     % define trial and labeling 
     disp('--- clipping ---');
     cfg = [];
-    cfg.trialfun = 'mytrialfun'; % (exp6-12, nov6-12)
-    % cfg.trialfun = 'mytrialfun_2'; % (exp1-5, nov1-5)
+    cfg.trialfun = trialfun;
     cfg.headerfile = vhdr_path;
     cfg.sequencefile = sequence_path;
     cfg = ft_definetrial(cfg);
@@ -35,6 +34,10 @@ function [data, cleaned_data, ica_result] = pre_processing(vhdr_path, sequence_p
 
     % ICA 
     disp('--- ICA ---');
-    [cleaned_data, ica_result] = my_autoica(data, id);
+    [cleaned_data1, ica_result1] = my_autoica(data, id);
+
+    % 2nd ICA
+    disp('--- 2nd ICA ---')
+    [cleaned_data2, ica_result2] = my_autoica(cleaned_data1, id);
 end
 
