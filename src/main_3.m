@@ -1,64 +1,38 @@
 % main_3: group concat
-% v2 -> v3 (concat by group) 
+% read data as below
+% - result/v2/{pname}.mat: v2 of {pname}, segment {i} (include
+% data_v2)
+% save data as below
+% - result/v3/{group}.mat: v3 of {group} (include data_v3)
 
-% input: all v2 files
-% 
-% output 
-% - result/{participant}/v2.mat 
-
-define_path;
-
-%% get v2.mat (each group)
-exp_dirs = dir(fullfile(result_dir, 'exp*'));
-nov_dirs = dir(fullfile(result_dir, 'nov*'));
-
-num_nov = numel(nov_dirs);
-num_exp = numel(exp_dirs);
-
-data_nov = cell(num_nov, 1);
-for i = 1:num_nov
-    data_nov{i} = load(fullfile(result_dir, nov_dirs(i).name, v2_fname));
-end
-
-data_exp = cell(num_exp, 1);
-for i = 1:num_exp
-    data_exp{i} = load(fullfile(result_dir, exp_dirs(i).name, v2_fname));
-end
-
-%% classify 
+set_path;
+groups = ['nov', 'exp'];
 num_type = 4;
-data_exp_concat = cell(1, num_type);
-data_nov_concat = cell(1, num_type);
 
-% nov
-for i = 1:num_nov
-    for j = 1:num_type
-        data = data_nov{i}.classified_data{j};
-        if (isempty(data_nov_concat{j}))
-            data_nov_concat{j} = data;
-        else 
-            cfg = [];
-            data_nov_concat{j} = ft_appenddata(cfg, data_nov_concat{j}, data);
-        end
-    end
+data_dir = fullfile(prj_dir, 'result', 'v2');
+res_dir = fullfile(prj_dir, 'result', 'v3');
+if ~exist(res_dir, 'dir')
+    mkdir(res_dir);
 end
 
-% exp
-for i = 1:num_exp
-    for j = 1:num_type
-        data = data_exp{i}.classified_data{j};
-        if (isempty(data_exp_concat{j}))
-            data_exp_concat{j} = data;
-        else 
-            cfg = [];
-            data_exp_concat{j} = ft_appenddata(cfg, data_exp_concat{j}, data);
+for i = 1:length(groups)
+    data_v3 = cell(1, num_type);
+    fnames = dir(fullfile(data_dir, [groups(i), '*.mat']));
+
+    for j = 1:length(fnames)
+        load(fnames(j)); % include data_v2
+
+        for l = 1:length(num_type)
+            if (isempty(data_v3{l}))
+                data_v3{l} = data_v2{l};
+            else 
+                cfg = [];
+                data_v3{l} = ft_appenddata(cfg, data_v3{l}, data_v2{l});
+            end
         end
     end
+
+    save(fullfile(res_dir, [groups(i), '.mat']), 'data_v3', '-v7.3');
 end
-
-%% save 
-save(fullfile(result_dir, 'v3_nov.mat'), 'data_nov_concat', '-v7.3');
-save(fullfile(result_dir, 'v3_exp.mat'), 'data_exp_concat', '-v7.3');
-
 
    
