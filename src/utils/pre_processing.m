@@ -1,13 +1,13 @@
-function [data, cleaned_data1, cleaned_data2, ica_result1, ica_result2] = pre_processing(vhdr_path, sequence_path, id, trialfun)
+function [cleaned_data, ica_result] = pre_processing(data, sequence_path, id, trialfun)
 % eeg pre_processing file
-% 1. read data and filtering 
+% 1. filtering (1-30Hz)
 % 2. define trial 
 % 3. ICA (run ICA and remove artifacts)
 %
-%   [DATA] = EEG_PREPROCESS_AND_TFR(VHDR_PATH, SEQUENCE_PATH)
+%   [DATA] = EEG_PREPROCESS_AND_TFR(DATA, SEQUENCE_PATH, ID, TRIALFUN)
 %
 %   input:
-%     VHDR_PATH: BrainVision VHDR file path 
+%     DATA: data in fieldtrip format
 %     SEQUENCE_PATH: sequence definition path 
 %
 %   output:
@@ -20,8 +20,7 @@ function [data, cleaned_data1, cleaned_data2, ica_result1, ica_result2] = pre_pr
     cfg.bpfilttype  = 'fir';
     cfg.bpfreq      = [1 30];
     cfg.continuous  = 'yes'; 
-    cfg.dataset     = vhdr_path;
-    data = ft_preprocessing(cfg);
+    data = ft_preprocessing(cfg, data);
 
     % define trial and labeling 
     disp('--- clipping ---');
@@ -34,10 +33,6 @@ function [data, cleaned_data1, cleaned_data2, ica_result1, ica_result2] = pre_pr
 
     % ICA 
     disp('--- ICA ---');
-    [cleaned_data1, ica_result1] = my_autoica(data, id);
-
-    % 2nd ICA
-    disp('--- 2nd ICA ---')
-    [cleaned_data2, ica_result2] = my_autoica(cleaned_data1, id);
+    [cleaned_data, ica_result] = my_autoica(data, id);
 end
 

@@ -1,36 +1,45 @@
 % main_2: participants base processing
-% v1 -> v2 (classified based on label)
-define_prj_path;
+% read data as below
+% - result/v1_2/{pname}_{i}.mat: v1 of {pname}, segment {i} (include
+% data_v1_2)
+% save data as below
+% - result/v2/{pname}.mat: v2 of {pname} (include data_v2)
 
-%% collect datasets
+set_path;
+groups = ['nov', 'exp'];
 num_type = 4;
-files = dir(fullfile(v1_dir, '*_v1.mat'));
-num_seg = numel(files);
-dataset = cell(num_seg, 1);
 
-for i = 1:num_seg
-    load(fullfile(v1_dir, files(i).name));
-    dataset{i} = data;
+data_dir = fullfile(prj_dir, 'result', 'v1_2');
+res_dir = fullfile(prj_dir, 'result', 'v2');
+if ~exist(res_dir, 'dir')
+    mkdir(res_dir);
 end
 
-%% classify data 
-classified_data = cell(1, num_type);
+for g = 1:length(groups)
+    for i = 1:2
+        id = [groups(g), '_', num2str(i)];
 
-for i = 1:num_seg
-    labels = dataset{i}.trialinfo; % 1, 2, 3, 4
-    
-    for j = 1:num_type
-        cfg = [];
-        cfg.trials = find(labels == j);
-        data = ft_selectdata(cfg, dataset{i});
+        disp(['--- id: ', id, ', start pre-processing ---']);
+        % read data
+        fnames = dir(fullfile(data_dir, [id, '*.mat']));
+        data_v2 = cell(num_type); % fnames
+        for j = 1:length(fnames)
+            load(fnames(j)); % include data_v1_2
 
-        if isempty(classified_data{j})
-            classified_data{j} = data;
-        else 
-            cfg = [];
-            classified_data{j} = ft_appenddata(cfg, classified_data{j}, data);
+            % classify based on the trialinfo
+            for l = 1:num_type 
+                cfg = [];
+                cfg.trials = find(labels == l);
+                selected_data = ft_selectdata(cfg, data_v1_2); 
+                if isempty(data_2{j})
+                    data_v2{j} = selected_data;
+                else 
+                    cfg = [];
+                    data_v2{j} = ft_appenddata(cfg, data_v2{j}, selected_data);
+                end
+            end
         end
+
+        save(fullfile(res_dir, [id, '.mat']), 'data_v2', '-v7.3');
     end
 end
-
-save(v2_path, 'classified_data', '-v7.3');

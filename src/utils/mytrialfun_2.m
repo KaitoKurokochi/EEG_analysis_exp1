@@ -49,7 +49,7 @@ for i = 1:num_trials
     if s4_id ~= -1
         s4_ev = EVsample(s4_id);
         s32_ev = EVsample(s32_id);
-        key = keys{i, 1};
+        key = keys{i, 1};l
 
         if (strcmp(key, 'ff') | strcmp(key, 'cf')) && s4_ev <= s32_ev && s32_ev <= s4_ev+2048*0.5
             task(i) = 1;
