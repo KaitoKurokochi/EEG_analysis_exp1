@@ -12,6 +12,8 @@ function [cleaned_data, ica_result] = pre_processing(data, sequence_path, id, tr
 %
 %   output:
 %     DATA: fieldtrip data structure after filtered
+   
+    vhdr = data.cfg.dataset; % use in clipping
 
     % filtering 
     disp("--- filtering ---")
@@ -26,7 +28,7 @@ function [cleaned_data, ica_result] = pre_processing(data, sequence_path, id, tr
     disp('--- clipping ---');
     cfg = [];
     cfg.trialfun = trialfun;
-    cfg.headerfile = vhdr_path;
+    cfg.headerfile = vhdr;
     cfg.sequencefile = sequence_path;
     cfg = ft_definetrial(cfg);
     data = ft_redefinetrial(cfg, data);
