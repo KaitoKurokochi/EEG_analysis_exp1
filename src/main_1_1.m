@@ -37,10 +37,10 @@ for g = 1:length(groups)
             
             % pre-processing
             if 1 <= i && i <= 5
-                [data_v1_1, ic_label] = pre_processing(data_v0, sequence_path, id, 'mytrialfun_2');
+                [data_v1_1, ic_label] = pre_processing(data_v0, sequence_path, seg_id, 'mytrialfun_2');
             end
             if 6 <= i && i <= 12
-                [data_v1_1, ic_label] = pre_processing(data_v0, sequence_path, id, 'mytrialfun');
+                [data_v1_1, ic_label] = pre_processing(data_v0, sequence_path, seg_id, 'mytrialfun');
             end
             % save v1
             save(fullfile(res_dir_v1, [seg_id, '.mat']), 'data_v1_1', '-v7.3');
