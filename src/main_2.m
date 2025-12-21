@@ -21,8 +21,8 @@ for g = 1:length(groups)
 
         disp(['--- id: ', id, ', start pre-processing ---']);
         % read data
-        fnames = dir(fullfile(data_dir, [id, '-*.mat']));
-        data_v2 = cell(num_type); % fnames
+        fnames = dir(fullfile(data_dir, [id, '-*.mat'])); % fnames
+        data_v2 = cell(num_type, 1); 
         for j = 1:length(fnames)
             load(fullfile(data_dir, fnames(j).name)); % include data_v1_2
 
@@ -31,11 +31,11 @@ for g = 1:length(groups)
                 cfg = [];
                 cfg.trials = find(data_v1_2.trialinfo == l);
                 selected_data = ft_selectdata(cfg, data_v1_2); 
-                if isempty(data_v2{j})
-                    data_v2{j} = selected_data;
+                if isempty(data_v2{l})
+                    data_v2{l} = selected_data;
                 else 
                     cfg = [];
-                    data_v2{j} = ft_appenddata(cfg, data_v2{j}, selected_data);
+                    data_v2{l} = ft_appenddata(cfg, data_v2{l}, selected_data);
                 end
             end
         end
