@@ -6,7 +6,7 @@
 % - result/v3/{group}.mat: v3 of {group} (include data_v3)
 
 set_path;
-groups = ['nov', 'exp'];
+groups = {'nov', 'exp'};
 num_type = 4;
 
 data_dir = fullfile(prj_dir, 'result', 'v2');
@@ -16,13 +16,13 @@ if ~exist(res_dir, 'dir')
 end
 
 for i = 1:length(groups)
-    data_v3 = cell(1, num_type);
-    fnames = dir(fullfile(data_dir, [groups(i), '*.mat']));
+    data_v3 = cell(num_type, 1);
+    fnames = dir(fullfile(data_dir, [groups{i}, '*.mat']));
 
     for j = 1:length(fnames)
-        load(fnames(j)); % include data_v2
+        load(fullfile(data_dir, fnames(j).name)); % include data_v2
 
-        for l = 1:length(num_type)
+        for l = 1:num_type
             if (isempty(data_v3{l}))
                 data_v3{l} = data_v2{l};
             else 
@@ -32,7 +32,7 @@ for i = 1:length(groups)
         end
     end
 
-    save(fullfile(res_dir, [groups(i), '.mat']), 'data_v3', '-v7.3');
+    save(fullfile(res_dir, [groups{i}, '.mat']), 'data_v3', '-v7.3');
 end
 
    
