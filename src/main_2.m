@@ -6,7 +6,7 @@
 % - result/v2/{pname}.mat: v2 of {pname} (include data_v2)
 
 set_path;
-groups = ['nov', 'exp'];
+groups = {'nov', 'exp'};
 num_type = 4;
 
 data_dir = fullfile(prj_dir, 'result', 'v1_2');
@@ -16,22 +16,22 @@ if ~exist(res_dir, 'dir')
 end
 
 for g = 1:length(groups)
-    for i = 1:2
-        id = [groups(g), '_', num2str(i)];
+    for i = 1:12
+        id = [groups{g}, num2str(i)];
 
         disp(['--- id: ', id, ', start pre-processing ---']);
         % read data
-        fnames = dir(fullfile(data_dir, [id, '*.mat']));
+        fnames = dir(fullfile(data_dir, [id, '-*.mat']));
         data_v2 = cell(num_type); % fnames
         for j = 1:length(fnames)
-            load(fnames(j)); % include data_v1_2
+            load(fullfile(data_dir, fnames(j).name)); % include data_v1_2
 
             % classify based on the trialinfo
             for l = 1:num_type 
                 cfg = [];
-                cfg.trials = find(labels == l);
+                cfg.trials = find(data_v1_2.trialinfo == l);
                 selected_data = ft_selectdata(cfg, data_v1_2); 
-                if isempty(data_2{j})
+                if isempty(data_v2{j})
                     data_v2{j} = selected_data;
                 else 
                     cfg = [];
