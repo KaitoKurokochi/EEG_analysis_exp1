@@ -13,13 +13,28 @@ if ~exist(res_dir, 'dir')
     mkdir(res_dir);
 end
 
-data_fnames = dir(fullfile(data_dir, "*.m"));
+data_fnames = {dir(fullfile(data_dir, '*.mat')).name};
 
+%%
 for i = 1:length(data_fnames)
-    load(data_fnames(i)); % include data_v1_1
+    load(fullfile(data_dir, data_fnames{i})); % include data_v1_1
 
-    % process
+    id = erase(data_fnames{i}, '.mat');
+    disp(['--- id: ', id, ', start processing ---']);
 
-    % save v1
-    save(fullfile(res_dir, [pname, '_', num2str(i), '.mat']), 'data_v1_2', '-v7.3');
+    % remove noise channel
+    % cfg          = [];
+    % cfg.method   = 'summary';
+    % data_noise_channel_removed = ft_rejectvisual(cfg, data_v1_1);
+
+    % interpolate removed channels
+
+    % baseline correlation 
+    cfg = [];
+    cfg.demean           = 'yes';
+        cfg.baselinewindow   = [-0.2 0];
+    data_v1_2 = ft_preprocessing(cfg, data_v1_1);
+    
+    % save 
+    save(fullfile(res_dir, [id, '.mat']), 'data_v1_2', '-v7.3');
 end
