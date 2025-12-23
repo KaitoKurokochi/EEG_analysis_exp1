@@ -8,7 +8,7 @@
 
 set_path;
 num_type = 4;
-main_channels = {'Fz', 'Cz', 'Pz'};
+main_channels = {'Pz'};
 conditions = {'ff', 'fs', 'sf', 'ss'};
 
 data_dir = fullfile(prj_dir, 'result', 'v4');
@@ -20,13 +20,12 @@ end
 % read data_v4
 load(fullfile(data_dir, 'spectr_nov.mat')); % include spectr_nov(4x1 spectrum data)
 load(fullfile(data_dir, 'spectr_exp.mat')); % include spectr_exp(4x1 spectrum data)
-
-%% 
+ 
 % nov
 for i = 1:length(conditions)
     for j = 1:length(main_channels)
         disp(['--- start imaging: nov, ', conditions{i}, ', ', main_channels{j}]);
-        hfig = my_singleplot_TFR(spectr_nov{i}, main_channels{j}, conditions{i}(2));
+        hfig = my_singleplot_TFR(spectr_nov{i}, main_channels{j}, [0.0, 1.6], conditions{i}(2));
         saveas(hfig, fullfile(res_dir, ['nov_', conditions{i}, '_', main_channels{j}, '.jpg']));
         close(hfig);
     end
@@ -36,7 +35,7 @@ end
 for i = 1:length(conditions)
     for j = 1:length(main_channels)
         disp(['--- start imaging: exp, ', conditions{i}, ', ', main_channels{j}]);
-        hfig = my_singleplot_TFR(spectr_exp{i}, main_channels{j}, conditions{i}(2));
+        hfig = my_singleplot_TFR(spectr_exp{i}, main_channels{j}, [0.0, 1.6], conditions{i}(2));
         saveas(hfig, fullfile(res_dir, ['exp_', conditions{i}, '_', main_channels{j}, '.jpg']));
         close(hfig);
     end
