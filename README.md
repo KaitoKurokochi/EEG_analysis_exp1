@@ -24,3 +24,4 @@ The flow of the processing is like below,
 - `result/v1_2/{pname}_{i}.mat`: after noise channels interpolated 
 - `result/v2/{name}.mat`: classified data
 - `reuslt/v3/{group_name}.mat`: after group concat 
+- `result/v4/spectr_{group_name}.mat`: spectrum data for each group
