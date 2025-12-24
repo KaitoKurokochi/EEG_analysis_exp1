@@ -11,8 +11,22 @@ if ~exist(res_dir, 'dir')
     mkdir(res_dir);
 end
 
-main_channels = {'Pz', 'Cz', 'Fz'};
 num_type = 4;
 conditions = {'ff', 'fs', 'sf', 'ss'};
+main_channels = {'Pz', 'Cz', 'Fz'};
 
-% read data
+% read data_v4
+load(fullfile(data_dir, 'spectr_nov.mat')); % include spectr_nov
+load(fullfile(data_dir, 'spectr_exp.mat')); % include spectr_exp
+
+%% run phase-opposition 
+for i = 1:num_type
+    for j = 1:length(main_channels)
+        disp(['--- start imaging: ', conditions{i}, ', ', main_channels{j}]);
+        hfig = my_fig_statistics(spectr_nov{i, j}, spectr_exp{i, j});
+        sgtitle(['Condition: ', conditions{i}, ' Channel: ', main_channels{j}]);
+        saveas(hfig, fullfile(res_dir, [conditions{i}, '_', main_channels{j}, '.jpg']));
+        close(hfig);
+    end
+end
+        
