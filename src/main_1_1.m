@@ -1,24 +1,27 @@
 % main_1_1: segment-base pre-processing (read data, filtering, clipping,
-% ICA, IC removal)
+% remove noise channels)
+% read data as below 
+% - rawdata/{pname}/*.vhdr: headerfile for each eeg segment
 % save data as below
-% - result/v0/{pname}_{i}.mat: rawdata of {pname}, segment {i}
-% - result/v1_1/{pname}_{i}.mat: pre-processed data
+% - result/v0/{pname}_{i}.mat: rawdata of {pname}, segment {i} % include
+% data_v0
+% - result/v1_1/{pname}_{i}.mat: pre-processed data % include data_v1_1
 
 set_path;
 groups = {'nov', 'exp'};
 
 for g = 1:length(groups)
     for i = 1:12
-        pname = [groups{g}, num2str(i)];
+        pname = [groups{g}, num2str(i)]; % like exp1
         data_dir = fullfile(prj_dir, 'rawdata', pname);
         vhdrs = dir(fullfile(data_dir, '*.vhdr'));
         res_dir_v0 = fullfile(prj_dir, 'result', 'v0');
         if ~exist(res_dir_v0, 'dir')
             mkdir(res_dir_v0);
         end
-        res_dir_v1 = fullfile(prj_dir, 'result', 'v1_1');
-        if ~exist(res_dir_v1, 'dir')
-            mkdir(res_dir_v1);
+        res_dir_v1_1 = fullfile(prj_dir, 'result', 'v1_1');
+        if ~exist(res_dir_v1_1, 'dir')
+            mkdir(res_dir_v1_1);
         end
         
         for v = 1:length(vhdrs)
@@ -37,13 +40,13 @@ for g = 1:length(groups)
             
             % pre-processing
             if 1 <= i && i <= 5
-                [data_v1_1, ic_label] = pre_processing(data_v0, sequence_path, seg_id, 'mytrialfun_2');
+                data_v1_1 = filtering_and_define_trials(data_v0, sequence_path, 'mytrialfun_2');
             end
             if 6 <= i && i <= 12
-                [data_v1_1, ic_label] = pre_processing(data_v0, sequence_path, seg_id, 'mytrialfun');
+                data_v1_1 = filtering_and_define_trials(data_v0, sequence_path, 'mytrialfun');
             end
             % save v1
-            save(fullfile(res_dir_v1, [seg_id, '.mat']), 'data_v1_1', '-v7.3');
+            save(fullfile(res_dir_v1_1, [seg_id, '.mat']), 'data_v1_1', '-v7.3');
         end
     end
 end
