@@ -40,10 +40,10 @@ for g = 1:length(groups)
             
             % pre-processing
             if 1 <= i && i <= 5
-                data_v1_1 = filtering_and_define_trials(data_v0, sequence_path, 'mytrialfun_2');
+                data_v1_1 = my_preprocessing(data_v0, sequence_path, 'mytrialfun_2');
             end
             if 6 <= i && i <= 12
-                data_v1_1 = filtering_and_define_trials(data_v0, sequence_path, 'mytrialfun');
+                data_v1_1 = my_preprocessing(data_v0, sequence_path, 'mytrialfun');
             end
             % save v1
             save(fullfile(res_dir_v1_1, [seg_id, '.mat']), 'data_v1_1', '-v7.3');
