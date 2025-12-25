@@ -15,15 +15,21 @@ end
 
 data_fnames = {dir(fullfile(data_dir, '*.mat')).name};
 
-for i = 1:1%length(data_fnames)
+for i = 1:length(data_fnames)
     load(fullfile(data_dir, data_fnames{i})); % include data_v1_1
 
     id = erase(data_fnames{i}, '.mat');
     disp(['--- id: ', id, ', start processing ---']);
 
+    % visual inspection 
+    cfg = [];
+    cfg.viewmode = 'vertical';
+    ft_databrowser(cfg, data_v1_1);
+
     % remove noise channel manually
     cfg          = [];
     cfg.method   = 'summary';
+    cfg.metric  = 'max';
     data_v1_2 = ft_rejectvisual(cfg, data_v1_1);
 
     % save 

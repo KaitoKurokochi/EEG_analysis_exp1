@@ -20,8 +20,9 @@ The flow of the processing is like below,
 
 # Data explanation 
 - `result/v0/{pname}_{i}.mat`: rawdata of {pname}, segment {i}
-- `result/v1_1/{pname}_{i}.mat`: pre-processed data, after artifact components removed 
-- `result/v1_2/{pname}_{i}.mat`: after noise channels interpolated 
+- `result/v1_1/{pname}_{i}.mat`:  read data, filtering, clipping, remove noise channels
+- `result/v1_2/{pname}_{i}.mat`: manually remove noise channels and trials
+- `result/v1_3/{pname}_{i}.mat`: run ICA
 - `result/v2/{name}.mat`: classified data
 - `reuslt/v3/{group_name}.mat`: after group concat, include `{group_name}.mat` 
 - `result/v4/spectr_{group_name}.mat`: spectrum data for each group
