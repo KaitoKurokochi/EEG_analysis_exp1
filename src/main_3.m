@@ -5,9 +5,7 @@
 % save data as below
 % - result/v3/{group}.mat: v3 of {group} (include data_v3)
 
-set_path;
-groups = {'nov', 'exp'};
-num_type = 4;
+config;
 
 data_dir = fullfile(prj_dir, 'result', 'v2');
 res_dir = fullfile(prj_dir, 'result', 'v3');
