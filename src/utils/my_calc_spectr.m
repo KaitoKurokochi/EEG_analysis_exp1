@@ -1,4 +1,4 @@
-function [spectr] = my_calc_spectr(data, channel)
+function [spectr] = my_calc_spectr(data)
 % input: 
 %     data(struct): EEG data in fieldtrip format
 % output: 
@@ -6,7 +6,6 @@ function [spectr] = my_calc_spectr(data, channel)
      
     % freq analysis
     cfg              = [];
-    cfg.channel      = channel;
     cfg.method       = 'mtmconvol';
     cfg.taper        = 'hanning';
     cfg.foi          = 1:0.5:30; % start:step:end

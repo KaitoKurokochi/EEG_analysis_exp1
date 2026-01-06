@@ -1,4 +1,5 @@
 function [fig] = my_spectr_power_plot(spectr)
+% 
 % input: 
 %     spectr(struct): EEG spectrum data in fieldtrip format
 
@@ -8,6 +9,8 @@ function [fig] = my_spectr_power_plot(spectr)
     labels_to_plot = spectr.label(channel_indices);
     
     fig = figure;
+    disp(size(spectr.freq));
+    disp(size(pow_to_plot'));
     plot(spectr.freq, pow_to_plot');
     xlabel('Frequency (Hz)');
     ylabel('absolute power (uV^2)');
