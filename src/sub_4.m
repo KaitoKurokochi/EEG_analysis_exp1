@@ -3,17 +3,13 @@
 % input: 
 % - result/v4/{group}.mat: v4 of {pname} (include spectr_{group})
 
-set_path;
+config;
 
 data_dir = fullfile(prj_dir, 'result', 'v4');
 res_dir = fullfile(prj_dir, 'result', 'sub4');
 if ~exist(res_dir, 'dir')
     mkdir(res_dir);
 end
-
-num_type = 4;
-conditions = {'ff', 'fs', 'sf', 'ss'};
-main_channels = {'Pz', 'Cz', 'Fz'};
 
 % read data_v4
 disp('--- loading v4 data ---');

@@ -8,8 +8,8 @@ function [fig] = my_freq_band_topomap(spectr)
         [4 7],   '\Theta',      [0 0.025]; ...
         [7 13],  '\alpha',      [0 17*10^-3]; ...
         [13 30], '\beta',      [0 7*10^-3]; ...
-        %[30 45], 'Low_γ',  [0 12.5*10^-4]; ...
-        %[60 90], 'High_γ', [0 5*10^-6]
+        [30 45], 'Low_γ',  [0 12.5*10^-4]; ...
+        [60 90], 'High_γ', [0 5*10^-6]
         };
 
     cfg = [];
@@ -25,7 +25,7 @@ function [fig] = my_freq_band_topomap(spectr)
 
     fig = figure('Name','Topographies by band (Individually Fixed Color Scale)');
     for k = 1:size(bands,1)
-        subplot(2,2,k); % order in 2x2
+        subplot(2,3,k); % order in 2x3
         cfg.xlim = bands{k,1}; % xlim = frequecy band
         % cfg.zlim = bands{k,3};
         
