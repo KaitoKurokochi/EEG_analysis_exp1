@@ -5,7 +5,7 @@
 % saves data as below
 % - result/v1_2/{pname}_{i}.mat: pre-processed data (data_v1_2)
 
-set_path;
+config;
 
 data_dir = fullfile(prj_dir, 'result', 'v1_1');
 res_dir = fullfile(prj_dir, 'result', 'v1_2');

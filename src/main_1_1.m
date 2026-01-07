@@ -7,8 +7,7 @@
 % data_v0
 % - result/v1_1/{pname}_{i}.mat: pre-processed data % include data_v1_1
 
-set_path;
-groups = {'nov', 'exp'};
+config;
 
 for g = 1:length(groups)
     for i = 1:12
@@ -31,7 +30,7 @@ for g = 1:length(groups)
 
             disp(['--- id: ', seg_id, ', start pre-processing ---']);
 
-            % read data 
+            % read raw data 
             cfg = [];
             cfg.dataset = vhdr_path;
             data_v0 = ft_preprocessing(cfg);
