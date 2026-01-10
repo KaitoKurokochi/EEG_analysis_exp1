@@ -18,11 +18,18 @@ for g = 1:length(groups)
         id = [groups{g}, num2str(i)];
 
         disp(['--- id: ', id, ', start pre-processing ---']);
-        % read data
-        fnames = dir(fullfile(data_dir, [id, '-*.mat'])); % fnames
+
         data_v2 = cell(num_type, 1); 
-        for j = 1:length(fnames)
-            load(fullfile(data_dir, fnames(j).name)); % include data_v1_3
+
+        for j = 1:5
+            % define fname, if none, continue
+            fname = fullfile(data_dir, [id, '-', num2str(j), '.mat']);
+            if ~exist(fname, 'file')
+                continue;
+            end
+
+            % read data
+            load(fname); % include data_v1_3
 
             % classify based on the trialinfo
             for l = 1:num_type 
