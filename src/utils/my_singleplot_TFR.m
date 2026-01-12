@@ -1,12 +1,8 @@
-function [hfig] = my_singleplot_TFR(spectr, channel, zlim, opt)
+function [hfig] = my_singleplot_TFR(spectr, channel, xlim)
 % input: 
 %     spectr(struct): EEG spectrum data in fieldtrip format
 %     channels(str): channel name to show on the graph 
-%     graph_option(str): graph line option, 'f': fastball, 's': slider,
-%     'fs': both
-    if nargin < 4
-        opt = '';
-    end      
+%     xlim(cell): time limitation
 
     % figure TFR for selected channels
     cfg = [];
@@ -16,18 +12,12 @@ function [hfig] = my_singleplot_TFR(spectr, channel, zlim, opt)
     cfg.layout       = 'easycapM10.mat';
     cfg.channel = channel;
     if nargin >= 3
-        cfg.zlim = zlim;
+        cfg.xlim = xlim;
     end
     
     hfig = figure();
     ft_singleplotTFR(cfg, spectr); title(strcat(['TFR: ', channel]));
     hold on;
     xline(0, '-r', 's2 start');
-    if contains(opt, 'f')
-        xline(0.5, '-r', 's2 end (fastball)'); % vertical line 
-    end
-    if contains(opt, 's')
-        xline(0.57, '-r', 's2 end (slider)'); % vertical line 
-    end
     hold off;
 end
