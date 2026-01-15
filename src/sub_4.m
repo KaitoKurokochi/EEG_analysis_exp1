@@ -48,16 +48,15 @@ for i = 1:num_type
     end
 end
 
-%%
 % TFR graph - nov, xlim
 for i = 1:num_type
     for j = 1:length(main_channels)
-        % if strcmp(conditions{j}, 'ff') || strcmp(conditions{j}, 'sf')
-        %     fig = my_singleplot_TFR(spectr_nov{i, j}, main_channels{j}, [0.0 0.5]);
-        % elseif strcmp(conditions{j}, 'fs') || strcmp(conditions{j}, 'ss')
-        %     fig = my_singleplot_TFR(spectr_nov{i, j}, main_channels{j}, [0.0 0.57]);
-        % end
-        fig = my_singleplot_TFR(spectr_nov{i, j}, main_channels{j}, [0.0 0.3]);
+        if strcmp(conditions{j}, 'ff') || strcmp(conditions{j}, 'sf')
+            fig = my_singleplot_TFR(spectr_nov{i, j}, main_channels{j}, [0.0 0.5]);
+        elseif strcmp(conditions{j}, 'fs') || strcmp(conditions{j}, 'ss')
+            fig = my_singleplot_TFR(spectr_nov{i, j}, main_channels{j}, [0.0 0.57]);
+        end
+        % fig = my_singleplot_TFR(spectr_nov{i, j}, main_channels{j}, [0.0 0.3]);
 
         hold on;
         xlabel('Time (s)');
@@ -73,12 +72,12 @@ end
 % TFR graph - exp, xlim
 for i = 1:num_type
     for j = 1:length(main_channels)
-        % if strcmp(conditions{j}, 'ff') || strcmp(conditions{j}, 'sf')
-        %     fig = my_singleplot_TFR(spectr_exp{i, j}, main_channels{j}, [0.0 0.5]);
-        % elseif strcmp(conditions{j}, 'fs') || strcmp(conditions{j}, 'ss')
-        %     fig = my_singleplot_TFR(spectr_exp{i, j}, main_channels{j}, [0.0 0.57]);
-        % end
-        fig = my_singleplot_TFR(spectr_exp{i, j}, main_channels{j}, [0.0 0.3]);
+        if strcmp(conditions{j}, 'ff') || strcmp(conditions{j}, 'sf')
+            fig = my_singleplot_TFR(spectr_exp{i, j}, main_channels{j}, [0.0 0.5]);
+        elseif strcmp(conditions{j}, 'fs') || strcmp(conditions{j}, 'ss')
+            fig = my_singleplot_TFR(spectr_exp{i, j}, main_channels{j}, [0.0 0.57]);
+        end
+        % fig = my_singleplot_TFR(spectr_exp{i, j}, main_channels{j}, [0.0 0.3]);
 
         hold on;
         xlabel('Time (s)');
