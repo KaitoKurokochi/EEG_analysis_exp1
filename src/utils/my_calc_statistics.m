@@ -1,4 +1,4 @@
-function [p_circWW, p_POS, p_zPOS] = my_calc_statistics(data1, data2, nperm, circww_ITCthreshold)
+function [p_POS, p_zPOS] = my_calc_statistics(data1, data2, nperm, circww_ITCthreshold)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Copyright Rufin VanRullen, 2016%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -78,21 +78,21 @@ alldata = cat(N,data1,data2);
 %     data2 = data2 ./ abs(data2);
 % end;
 
-%compute circular Watson-Williams test
-fprintf('Computing circular Watson-Williams test...');
-[p_circWW, Fmatrix] = matrix_circ_wwtest(data1,data2,circww_ITCthreshold);
-fprintf(' done.\n');
+% %compute circular Watson-Williams test
+% fprintf('Computing circular Watson-Williams test...');
+% [p_circWW, Fmatrix] = matrix_circ_wwtest(data1,data2,circww_ITCthreshold);
+% fprintf(' done.\n');
 
-%check p_circWW. If suspicious, output warning message about circww_ITCthreshold
-significantpoints = sum(p_circWW(:)<0.001) / length(p_circWW(:));
-if significantpoints<0.001 || significantpoints>0.33
-    fprintf('   WARNING: there seem to be too many or too few significant points in the p_circWW matrix.\n');
-    fprintf('   Check consistency with p_POS and p_zPOS. If results are unsatisfactory, it is most likely\n');
-    fprintf('   due to the minimum ITC criterion of the circWW test. Too strict a criterion can hide\n');
-    fprintf('   meaningful effects, too liberal and all points become ''significant''\n');
-    fprintf('   The current value for this criterion is %3.4f\n',circww_ITCthreshold);
-    fprintf('   We recommend adapting this criterion as needed.\n');
-end;
+% %check p_circWW. If suspicious, output warning message about circww_ITCthreshold
+% significantpoints = sum(p_circWW(:)<0.001) / length(p_circWW(:));
+% if significantpoints<0.001 || significantpoints>0.33
+%     fprintf('   WARNING: there seem to be too many or too few significant points in the p_circWW matrix.\n');
+%     fprintf('   Check consistency with p_POS and p_zPOS. If results are unsatisfactory, it is most likely\n');
+%     fprintf('   due to the minimum ITC criterion of the circWW test. Too strict a criterion can hide\n');
+%     fprintf('   meaningful effects, too liberal and all points become ''significant''\n');
+%     fprintf('   The current value for this criterion is %3.4f\n',circww_ITCthreshold);
+%     fprintf('   We recommend adapting this criterion as needed.\n');
+% end;
 
 %compute POS values (only sum, no baseline correction to facilitate
 %surrogate comparisons)

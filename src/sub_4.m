@@ -92,12 +92,62 @@ end
 
 %% run statistics
 for i = 1:num_type
-    for j = 1:length(main_channels)
+    for j= 1:length(main_channels)
         disp(['--- start imaging: ', conditions{i}, ', ', main_channels{j}, '---']);
-        hfig = my_fig_statistics(spectr_nov{i, j}, spectr_exp{i, j});
-        sgtitle(['Condition: ', conditions{i}, ' Channel: ', main_channels{j}]);
-        saveas(hfig, fullfile(res_dir, [conditions{i}, '_', main_channels{j}, '.jpg']));
-        close(hfig);
+        [fig_perm, fig_zscore, p_POS] = my_fig_statistics(spectr_nov{i, j}, spectr_exp{i, j});
+
+        figure(fig_perm);
+        title(['Permutation - ', conditions{i}, ' ', main_channels{j}]);
+        saveas(fig_perm, fullfile(res_dir, [conditions{i}, '_', main_channels{j}, '_perm.jpg']));
+        close(fig_perm);
+
+        figure(fig_zscore);
+        title(['Z-score - ', conditions{i}, ' ', main_channels{j}]);
+        saveas(fig_zscore, fullfile(res_dir, [conditions{i}, '_', main_channels{j}, '_zscore.jpg']));
+        close(fig_zscore);
+        break;
+    end
+    break;
+end
+
+%% anlysis using ft_freqstatistics
+for i = 1:num_type
+    for j= 1:length(main_channels)
+        disp(['--- start stat: ', conditions{i}, ', ', main_channels{j}, '---']);
+
+        % design config -> 
+        n_nov = size(spectr_nov{i, j}.powspctrm, 1); 
+        n_exp = size(spectr_exp{i, j}.powspctrm, 1); 
+        design = zeros(1, n_nov + n_exp);
+        design(1, 1:n_nov) = 1;
+        design(1, n_nov+1:end) = 2;
+        
+        cfg = [];
+        cfg.method      = 'montecarlo';       
+        cfg.statistic   = 'indepsamplesT';    
+        cfg.parameter   = 'powspctrm';
+        cfg.design      = design;
+        cfg.ivar        = 1;               
+        
+        cfg.correctm    = 'cluster';
+        cfg.clusteralpha = 0.05;          
+        cfg.clusterstatistic = 'maxsum';
+        cfg.numrandomization = 1000;
+        
+        stat = ft_freqstatistics(cfg, spectr_nov{i, j}, spectr_exp{i, j});
+        
+        % figure 
+        cfg = [];
+        cfg.parameter = 'stat'; 
+        % cfg.zlim = [-5 5]; 
+
+        fig = figure();
+        ft_singleplotTFR(cfg, stat);
+        title(['Permutation - ', conditions{i}, ' ', main_channels{j}]);
+        saveas(fig, fullfile(res_dir, [conditions{i}, '_', main_channels{j}, '_perm.jpg']));
+        close(fig);
     end
 end
-        
+
+
+
