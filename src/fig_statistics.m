@@ -27,6 +27,9 @@ for i = 1:num_type
         ft_singleplotTFR(cfg, stat);
 
         % figure options
+        set(gcf,'renderer','zbuffer');
+        shading interp;
+        colormap('hot'); clim = get(gca,'clim'); colorbar; set(gca,'clim',[0 clim(2)]); l
         title(['Permutation - ', conditions{i}, ' ', main_channels{j}, ' (plus: exp, minus: nov)']);
         hold on;
         xline(0, '-r', 's2 start');
@@ -48,6 +51,8 @@ for i = 1:num_type
         ft_singleplotTFR(cfg, stat);
 
         % figure options
+        colormap("hot");
+        colorbar;
         title(['Permutation - ', conditions{i}, ' ', main_channels{j}, ' (plus: exp, minus: nov)']);
         hold on;
         xline(0, '-r', 's2 start');
