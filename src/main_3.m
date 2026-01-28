@@ -1,4 +1,5 @@
 % main_3: group concat
+% data_v3 include only main_channel data
 % read data as below
 % - result/v2/{pname}.mat: v2 of {pname}, segment {i} (include
 % data_v2)
