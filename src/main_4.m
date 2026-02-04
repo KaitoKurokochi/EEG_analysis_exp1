@@ -16,28 +16,28 @@ end
 load(fullfile(data_dir, 'nov.mat'));
 data_nov = data_v3;
 
-spectr_nov = cell(num_type, length(main_channels));
+tfr_pow_nov = cell(num_type, length(main_channels));
 for i = 1:num_type
     for j = 1:length(main_channels)
         disp(['--- processing: type ', num2str(i), ', channel ', main_channels{j}, '---']);
-        spectr_nov{i, j} = my_calc_spectr(data_nov{i}, main_channels{j});
+        tfr_pow_nov{i, j} = my_calc_spectr(data_nov{i}, main_channels{j});
     end
 end
 
-save(fullfile(res_dir, 'spectr_nov.mat'), 'spectr_nov', '-v7.3');
+save(fullfile(res_dir, 'tfr_pow_nov.mat'), 'tfr_pow_nov', '-v7.3');
 
-clear data_nov data_v3 spectr_nov;
+clear data_nov data_v3;
 
 %% exp
 load(fullfile(data_dir, 'exp.mat'));
 data_exp = data_v3;
 
-spectr_exp = cell(num_type, length(main_channels));
+tfr_pow_exp = cell(num_type, length(main_channels));
 for i = 1:num_type
     for j = 1:length(main_channels)
         disp(['--- processing: type ', num2str(i), ', channel ', main_channels{j}, '---']);
-        spectr_exp{i, j} = my_calc_spectr(data_exp{i}, main_channels{j});
+        tfr_pow_exp{i, j} = my_calc_spectr(data_exp{i}, main_channels{j});
     end
 end
 
-save(fullfile(res_dir, 'spectr_exp.mat'), 'spectr_exp', '-v7.3');
+save(fullfile(res_dir, 'tfr_pow_exp.mat'), 'tfr_pow_exp', '-v7.3');
