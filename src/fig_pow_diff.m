@@ -5,12 +5,12 @@ config;
 
 stat_data_dir = fullfile(prj_dir, 'result', 'stat_cluster_based_permutest/');
 freq_data_dir = fullfile(prj_dir, 'result', 'freq_cleaned/');
-res_dir = fullfile(prj_dir, 'result', 'figure_pow_diff');
+res_dir = fullfile(prj_dir, 'result', 'fig_pow_diff');
 if ~exist(res_dir, 'dir')
     mkdir(res_dir);
 end
 
-% read data_v4 (time x freq)
+%% read data_v4 (time x freq)
 disp('--- loading cleaned data ---');
 load(fullfile(freq_data_dir, 'freq_nov.mat')); % include freq_nov_cleaned
 load(fullfile(freq_data_dir, 'freq_exp.mat')); % include freq_exp_cleaned
