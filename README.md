@@ -6,7 +6,7 @@ The flow of the processing is like below,
 3. find missing trials
 4. pre-processing 
 5. group concat
-6. group comparison
+6. group statistics
 
 # Path setting 
 - Read [this page](https://www.fieldtriptoolbox.org/faq/matlab/installation/) 
@@ -20,7 +20,7 @@ The flow of the processing is like below,
 
 # Data explanation 
 - `result/v0/{pname}_{i}.mat`: rawdata of {pname}, segment {i}
-- `result/v1_1/{pname}_{i}.mat`:  read data, filtering, clipping, remove noise channels
+- `result/v1_1/{pname}_{i}.mat`:  read data, filtering, clipping, baseline correction
 - `result/v1_2/{pname}_{i}.mat`: manually remove noise channels and trials
 - `result/v1_3/{pname}_{i}.mat`: run ICA
 - `result/v2/{name}.mat`: classified data
