@@ -1,18 +1,21 @@
+% power difference (time x freq)
+% mask cluster
+
 config;
 
-stat_data_dir = fullfile(prj_dir, 'result', 'TFR_cluster_based_permutest');
-power_data_dir = fullfile(prj_dir, 'result', 'v4');
-res_dir = fullfile(prj_dir, 'result', 'figure_power_difference');
+stat_data_dir = fullfile(prj_dir, 'result', 'stat_cluster_based_permutest/');
+freq_data_dir = fullfile(prj_dir, 'result', 'freq_cleaned/');
+res_dir = fullfile(prj_dir, 'result', 'figure_pow_diff');
 if ~exist(res_dir, 'dir')
     mkdir(res_dir);
 end
 
 % read data_v4 (time x freq)
-disp('--- loading v4 data ---');
-load(fullfile(power_data_dir, 'spectr_nov.mat')); % include spectr_nov
-load(fullfile(power_data_dir, 'spectr_exp.mat')); % include spectr_exp
+disp('--- loading cleaned data ---');
+load(fullfile(freq_data_dir, 'freq_nov.mat')); % include freq_nov_cleaned
+load(fullfile(freq_data_dir, 'freq_exp.mat')); % include freq_exp_cleaned
 
-%% 
+%% figure (each type, each condition)
 for i = 1:num_type
     for j= 1:length(main_channels)
         disp(['--- start stat: ', conditions{i}, ', ', main_channels{j}, '---']);
@@ -24,8 +27,8 @@ for i = 1:num_type
         % simply calculate average power for each group
         cfg = [];
         cfg.keeptrials = 'no';
-        avg_power_exp = ft_freqdescriptives(cfg, spectr_exp{i, j}); 
-        avg_power_nov = ft_freqdescriptives(cfg, spectr_nov{i, j});
+        avg_power_exp = ft_freqdescriptives(cfg, freq_exp_cleaned{i, j}); 
+        avg_power_nov = ft_freqdescriptives(cfg, freq_nov_cleaned{i, j});
 
         % calculate power difference (positive: exp, negative: non-exp)
         cfg = [];
@@ -40,8 +43,6 @@ for i = 1:num_type
         ft_singleplotTFR(cfg, diff_power);
         
         % figure options
-        set(gcf,'renderer','zbuffer');
-        shading interp;
         title(['Power difference(z:power) - ', conditions{i}, ' ', main_channels{j}, ' (pos: exp, neg: nov)']);
         hold on;
         xline(0, '-r', 's2 start');
@@ -71,8 +72,6 @@ for i = 1:num_type
         ft_singleplotTFR(cfg, diff_power);
         
         % figure options
-        set(gcf,'renderer','zbuffer');
-        shading interp;
         title(['Power difference with mask(z:power, pos:exp, neg:nov) - ', conditions{i}, ' ', main_channels{j}]);
         hold on;
         xline(0, '-r', 's2 start');

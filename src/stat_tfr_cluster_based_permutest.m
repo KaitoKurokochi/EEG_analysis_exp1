@@ -3,16 +3,16 @@
 
 config;
 
-data_dir = fullfile(prj_dir, 'result', 'v4');
-res_dir = fullfile(prj_dir, 'result', 'TFR_cluster_based_permutest');
+data_dir = fullfile(prj_dir, 'result', 'freq_cleaned'); 
+res_dir = fullfile(prj_dir, 'result', 'stat_cluster_based_permutest');
 if ~exist(res_dir, 'dir')
     mkdir(res_dir);
 end
 
 %% read data_v4
-disp('--- loading v4 data ---');
-load(fullfile(data_dir, 'spectr_nov.mat')); % include spectr_nov
-load(fullfile(data_dir, 'spectr_exp.mat')); % include spectr_exp
+disp('--- loading cleaned data ---');
+load(fullfile(data_dir, 'freq_nov.mat')); % include freq_nov_cleaned
+load(fullfile(data_dir, 'freq_exp.mat')); % include freq_exp_cleaned
 
 %% data statistics 
 for i = 1:num_type
@@ -31,8 +31,8 @@ for i = 1:num_type
         cfg.numrandomization = 10000; 
 
         % design config -> 
-        n_exp = size(spectr_exp{i, j}.powspctrm, 1); 
-        n_nov = size(spectr_nov{i, j}.powspctrm, 1); 
+        n_exp = size(freq_exp_cleaned{i, j}.powspctrm, 1); 
+        n_nov = size(freq_nov_cleaned{i, j}.powspctrm, 1); 
         design = zeros(1, n_exp + n_nov);
         design(1, 1:n_exp) = 1;
         design(1, n_exp+1:end) = 2;
@@ -40,7 +40,7 @@ for i = 1:num_type
         cfg.design      = design;
         cfg.ivar        = 1;               
         
-        stat = ft_freqstatistics(cfg, spectr_exp{i, j}, spectr_nov{i, j});
+        stat = ft_freqstatistics(cfg, freq_exp_cleaned{i, j}, freq_nov_cleaned{i, j});
         save(fullfile(res_dir, [conditions{i}, '_', main_channels{j}, '.mat']), 'stat', '-v7.3');
     end
 end
