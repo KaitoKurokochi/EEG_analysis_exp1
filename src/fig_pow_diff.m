@@ -38,7 +38,8 @@ for i = 1:num_type
 
         % --- figure --- 
         cfg = [];
-        cfg.parameter = 'powspctrm'; 
+        cfg.parameter      = 'powspctrm'; 
+        cfg.zlim           = 'maxabs';
         fig = figure();
         ft_singleplotTFR(cfg, diff_power);
         
@@ -64,10 +65,11 @@ for i = 1:num_type
 
         % figure
         cfg = [];
-        cfg.parameter = 'powspctrm'; 
-        cfg.maskparameter = 'mask';
-        cfg.maskstyle     = 'opacity';
-        cfg.maskalpha     = 0.0;
+        cfg.parameter      = 'powspctrm'; 
+        cfg.maskparameter  = 'mask';
+        cfg.maskstyle      = 'opacity';
+        cfg.maskalpha      = 0.0;
+        cfg.zlim           = 'maxabs';
         fig = figure();
         ft_singleplotTFR(cfg, diff_power);
         
