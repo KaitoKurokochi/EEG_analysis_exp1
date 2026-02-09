@@ -15,8 +15,8 @@ num_trials = length(s2_ids);
 
 % Define the time window for clipping (0.2s pre-trigger to 1.0s post-trigger)
 % Note: Using the original values for consistency. If you want different times, change the multipliers (0.2 and 1).
-PreTrig   = round(1.5 * hdr.Fs);
-PostTrig  = round(2.0 * hdr.Fs);
+PreTrig   = round(0.5 * hdr.Fs);
+PostTrig  = round(1.0 * hdr.Fs);
 begsample = EVsample(s2_ids) - PreTrig;
 endsample = EVsample(s2_ids) + PostTrig;
 offset = -PreTrig*ones(size(endsample));
