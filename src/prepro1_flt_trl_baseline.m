@@ -9,11 +9,11 @@
 
 config;
 
-res_v0_dir = fullfile(prj_dir, 'result', 'v0');
+res_raw_dir = fullfile(prj_dir, 'result', 'raw');
 if ~exist(res_v0_dir, 'dir')
     mkdir(res_v0_dir);
 end
-res_v1_1_dir = fullfile(prj_dir, 'result', 'v1_1');
+res_prepro1_dir = fullfile(prj_dir, 'result', 'prepro1');
 if ~exist(res_v1_1_dir, 'dir')
     mkdir(res_v1_1_dir);
 end
