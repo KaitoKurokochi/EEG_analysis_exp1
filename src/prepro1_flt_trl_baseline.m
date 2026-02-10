@@ -10,12 +10,12 @@
 config;
 
 res_raw_dir = fullfile(prj_dir, 'result', 'raw');
-if ~exist(res_v0_dir, 'dir')
-    mkdir(res_v0_dir);
+if ~exist(res_raw_dir, 'dir')
+    mkdir(res_raw_dir);
 end
 res_prepro1_dir = fullfile(prj_dir, 'result', 'prepro1');
-if ~exist(res_v1_1_dir, 'dir')
-    mkdir(res_v1_1_dir);
+if ~exist(res_prepro1_dir, 'dir')
+    mkdir(res_prepro1_dir);
 end
 
 for g = 1:length(groups)
@@ -36,7 +36,7 @@ for g = 1:length(groups)
             cfg.dataset      = vhdr_path;
             data = ft_preprocessing(cfg);
             % save v0
-            save(fullfile(res_v0_dir, [seg_id, '.mat']), 'data', '-v7.3');
+            save(fullfile(res_raw_dir, [seg_id, '.mat']), 'data', '-v7.3');
 
             % filtering (1-30)
             disp('--- filtering ---')
@@ -67,8 +67,8 @@ for g = 1:length(groups)
             cfg.baselinewindow = [-0.2 0];
             data = ft_preprocessing(cfg, data);
             
-            % save v1
-            save(fullfile(res_v1_1_dir, [seg_id, '.mat']), 'data', '-v7.3');
+            % save prepro1
+            save(fullfile(res_prepro1_dir, [seg_id, '.mat']), 'data', '-v7.3');
         end
     end
 end
