@@ -3,7 +3,7 @@
 config;
 
 data_dir = fullfile(prj_dir, 'result', 'prepro2'); % set data dir
-res_dir = fullfile(prj_dir, 'result', 'fig_erp_all_trls_after_cleaned'); % set res dir
+res_dir = fullfile(prj_dir, 'result', 'fig_erp_all_trls_prepro2'); % set res dir
 if ~exist(res_dir, 'dir')
     mkdir(res_dir);
 end
@@ -45,6 +45,7 @@ for i = 1:length(groups)
             title([id, ' ', num2str(size(data.trialinfo, 1)), 'trials']);
 
             saveas(fig, fullfile(res_dir, [id, '_avg.jpg']));
+            close(fig);
         end
     end
 end
