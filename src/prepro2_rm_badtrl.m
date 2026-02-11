@@ -13,9 +13,9 @@ if ~exist(res_dir, 'dir')
 end
 
 %% check each segment 
-for i = 1:length(groups)
-    for j = 1:12
-        for k = 1:5
+for i = 1:1%length(groups)
+    for j = 1:1%12
+        for k = 1:1%5
             seg_id = [groups{i}, num2str(j), '-', num2str(k)];
 
             fname = fullfile(data_dir, [seg_id, '.mat']);
@@ -39,59 +39,23 @@ for i = 1:length(groups)
             cfg.trials = idx_kept; 
             data = ft_preprocessing(cfg, data);
 
-            % % detect jump artifact
-            % cfg = [];
-            % cfg.artfctdef.zvalue.channel = 'EEG'; 
-            % cfg.artfctdef.zvalue.cutoff  = 30; 
-            % cfg.artfctdef.zvalue.trlpadding = 0;
-            % cfg.artfctdef.zvalue.artpadding = 0.1;
-            % cfg.artfctdef.zvalue.fltpadding = 0;
-            % cfg.artfctdef.zvalue.cumulative    = 'yes';
-            % cfg.artfctdef.zvalue.medianfilter  = 'yes';
-            % cfg.artfctdef.zvalue.medianfiltord = 9;
-            % cfg.artfctdef.zvalue.interactive = 'yes';
-            % [cfg_artfct_jump, artifact_jump] = ft_artifact_zvalue(cfg, data);
-            % 
-            % % detect EOG artifact
-            % cfg = [];
-            % cfg.artfctdef.zvalue.channel = 'EOG'; 
-            % cfg.artfctdef.zvalue.cutoff  = 4; 
-            % cfg.artfctdef.zvalue.trlpadding = 0;
-            % cfg.artfctdef.zvalue.artpadding = 0.1;
-            % cfg.artfctdef.zvalue.fltpadding = 0;
-            % cfg.artfctdef.zvalue.bpfilter   = 'yes';
-            % cfg.artfctdef.zvalue.bpfilttype = 'but';
-            % cfg.artfctdef.zvalue.bpfreq     = [4 15];
-            % cfg.artfctdef.zvalue.bpfiltord  = 4;
-            % cfg.artfctdef.zvalue.hilbert    = 'yes';
-            % cfg.artfctdef.zvalue.interactive = 'yes';
-            % [cfg_artfct_eog, artifact_eog] = ft_artifact_zvalue(cfg, data);
-            % 
-            % % reject artifact
-            % cfg = [];
-            % cfg.artfctdef.jump.artifact   = artifact_jump;
-            % cfg.artfctdef.eog.artifact    = artifact_eog;
-            % data = ft_rejectartifact(cfg, data);
-            % 
-            % data_clean = data; % debug
-
             % 3SD
             ntrl = length(data.trial);
-            trial_var = zeros(ntrl, 1);
+            trl_means = zeros(ntrl, 1);
+            % means for each trial
             for t = 1:ntrl
-                trial_var(t) = var(data.trial{t}(:)); 
+                trl_means(t) = mean(data.trial{t}(:)); 
             end
-            
-            m_var = mean(trial_var);
-            s_var = std(trial_var);
-            threshold = m_var + 3 * s_var;
-            bad_trials = find(trial_var > threshold);
+            m_mean = mean(trl_means);
+            s_mean = std(trl_means);
+            threshold = m_mean + 3 * s_mean;
+            bad_trls = find(trl_means > threshold);
             
             cfg = [];
-            cfg.trials = setdiff(1:ntrl, bad_trials);
+            cfg.trials = setdiff(1:ntrl, bad_trls);
             data = ft_preprocessing(cfg, data);
             
-            disp([num2str(length(bad_trials)) ' trials removed']);
+            disp([num2str(length(bad_trls)) ' trials removed']);
 
             % save prepro2 - have removed bad channel
             save(fullfile(res_dir, [seg_id, '.mat']), 'data', '-v7.3');
