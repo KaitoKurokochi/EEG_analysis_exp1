@@ -1,11 +1,11 @@
-% main_1_1: segment-base pre-processing (read data, filtering, clipping,
-% baseline correction)
+% pro-processing1: segment-base pre-processing (read data, filtering, resampling,
+% trial definition, baseline correction)
 % read data as below 
 % - rawdata/{pname}/*.vhdr: headerfile for each eeg segment
 % save data as below
-% - result/v0/{pname}_{i}.mat: rawdata of {pname}, segment {i} % include
+% - result/raw/{pname}_{i}.mat: rawdata of {pname}, segment {i} % include
 % data
-% - result/v1_1/{pname}_{i}.mat: pre-processed data % include data
+% - result/prepro1/{pname}_{i}.mat: pre-processed data % include data
 
 config;
 
@@ -38,12 +38,12 @@ for g = 1:length(groups)
             % save v0
             save(fullfile(res_raw_dir, [seg_id, '.mat']), 'data', '-v7.3');
 
-            % filtering (1-30)
+            % filtering (1-100)
             disp('--- filtering ---')
             cfg = [];
             cfg.bpfilter      = 'yes';
             cfg.bpfilttype    = 'fir';
-            cfg.bpfreq        = [1 30];
+            cfg.bpfreq        = [1 100];
             cfg.continuous    = 'yes'; 
             data = ft_preprocessing(cfg, data);
 
