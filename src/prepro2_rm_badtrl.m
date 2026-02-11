@@ -13,9 +13,9 @@ if ~exist(res_dir, 'dir')
 end
 
 %% check each segment 
-for i = 1:1%length(groups)
-    for j = 1:1%12
-        for k = 1:1%5
+for i = 1:length(groups)
+    for j = 1:12
+        for k = 1:5
             seg_id = [groups{i}, num2str(j), '-', num2str(k)];
 
             fname = fullfile(data_dir, [seg_id, '.mat']);
@@ -31,7 +31,7 @@ for i = 1:1%length(groups)
             % reject artifacts (mannually)
             cfg = [];
             cfg.method      = 'summary';
-            cfg.channel     = {'all', '-Fp1', '-Fp2', '-EOG', '-M1', '-M2'};
+            % cfg.channel     = {'all', '-Fp1', '-Fp2', '-EOG', '-M1', '-M2'};
             data_rejvis = ft_rejectvisual(cfg, data);
             % extract good trials
             [~, idx_kept] = ismember(data_rejvis.sampleinfo, data.sampleinfo, 'rows');

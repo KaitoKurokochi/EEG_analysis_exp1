@@ -35,15 +35,20 @@ for g = 1:length(groups)
             cfg              = [];
             cfg.dataset      = vhdr_path;
             data = ft_preprocessing(cfg);
-            % save v0
-            save(fullfile(res_raw_dir, [seg_id, '.mat']), 'data', '-v7.3');
+            % save raw data
+            % save(fullfile(res_raw_dir, [seg_id, '.mat']), 'data', '-v7.3');
 
             % filtering (1-100)
             disp('--- filtering ---')
             cfg = [];
+            % band-pass filter
             cfg.bpfilter      = 'yes';
-            cfg.bpfilttype    = 'fir';
+            cfg.bpfilttype    = 'firws';
             cfg.bpfreq        = [1 100];
+            % band-stop filter
+            cfg.bsfilter      = 'yes';
+            cfg.bsfreq        = [49 51];
+            cfg.bsfilttype    = 'firws';
             cfg.continuous    = 'yes'; 
             data = ft_preprocessing(cfg, data);
 
