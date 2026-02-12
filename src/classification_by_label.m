@@ -3,7 +3,7 @@
 config;
 
 data_dir = fullfile(prj_dir, 'result', 'prepro3');
-res_dir = fullfile(prj_dir, 'result', 'data_classified');
+res_dir = fullfile(prj_dir, 'result', 'erp_group_cond');
 if ~exist(res_dir, 'dir')
     mkdir(res_dir);
 end
