@@ -2,8 +2,8 @@
 
 config;
 
-data_dir = fullfile(prj_dir, 'result', 'prepro2'); % set data dir
-res_dir = fullfile(prj_dir, 'result', 'fig_erp_all_trls_prepro2'); % set res dir
+data_dir = fullfile(prj_dir, 'result', 'prepro3'); % set data dir
+res_dir = fullfile(prj_dir, 'result', 'fig_erp_all_trls_prepro3'); % set res dir
 if ~exist(res_dir, 'dir')
     mkdir(res_dir);
 end
