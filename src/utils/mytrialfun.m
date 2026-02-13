@@ -13,7 +13,7 @@ keys = T_sequence{:, 'Key'};
 s2_ids = find(strcmp('s2', EVvalue)==1);
 num_trials = length(s2_ids);
 
-% Define the time window for clipping (0.2s pre-trigger to 1.0s post-trigger)
+% Define the time window for clipping (0.5s pre-trigger to 1.0s post-trigger)
 % Note: Using the original values for consistency. If you want different times, change the multipliers (0.2 and 1).
 PreTrig   = round(0.5 * hdr.Fs);
 PostTrig  = round(1.0 * hdr.Fs);
@@ -26,8 +26,10 @@ if num_trials < height(T_sequence)
     error('the num of s2 and sequence is not equal');
 end 
 
-% task: at the moment, pressed -> 1, not pressed -> 0, without signal -> -1
-task = zeros(num_trials, 1);
+% is_pressed: pressed -> 1, not pressed -> 0, without signal -> -1
+is_pressed = zeros(num_trials, 1);
+rt = zeros(num_trials, 1);
+
 for i = 1:num_trials
     is_in_trial = EVsample >= begsample(i) & EVsample <= endsample(i);
     event_ids = find(is_in_trial);
@@ -47,7 +49,7 @@ for i = 1:num_trials
 
     if s32_id == -1
         disp(['trial ' num2str(i) ': without s32']);
-        task(i) = -1;
+        is_pressed(i) = -1;
         continue;
     end
 
@@ -57,47 +59,52 @@ for i = 1:num_trials
         s32_ev = EVsample(s32_id);
 
         if s2_ev <= s4_ev && s4_ev <= s32_ev
-            task(i) = 1;
+            is_pressed(i) = 1;
+            dt_samples = EVsample(s32_id) - EVsample(s2_id);
+            rt(i) = dt_samples / hdr.Fs;
         end
     end
 end
 
 % check if the task correct/incorrect 
+% task: NaN: No-signal, 1: ff-c, -1: ff-i, 2: fc-c...
+task = zeros(num_trials, 1);
 for i = 1:num_trials
-    if task(i) == -1
+    if is_pressed(i) == -1 % no-signal
+        task(i) = NaN;
         continue;
     end
 
     key = keys{i, 1};
     if strcmp(key, 'ff')
-        if task(i) == 1
-            task(i) = 1; % ff correct 
+        if is_pressed(i) == 1
+            task(i) = 1; % correct
         else 
-            task(i) = 0; % incorrect
+            task(i) = -1; % incorrect
         end
     elseif strcmp(key, 'fc')
-        if task(i) == 1
-            task(i) = 0; % incorrect
+        if is_pressed(i) == 1
+            task(i) = -2; % incorrect
         else 
             task(i) = 2; % fc correct 
         end
     elseif strcmp(key, 'cf')
-        if task(i) == 1
-            task(i) = 0; % incorrect
+        if is_pressed(i) == 1
+            task(i) = -3; % incorrect
         else 
             task(i) = 3; % cf correct
         end
     elseif strcmp(key, 'cc')
-        if task(i) == 1
+        if is_pressed(i) == 1
             task(i) = 4; % cc correct
         else 
-            task(i) = 0; % incorrect
+            task(i) = -4; % incorrect
         end
     else 
-        task(i) = -1;
+        task(i) = NaN;
     end
 end
 
 % concatenate the columns into the trl matrix
-trl = [begsample endsample offset task];
+trl = [begsample endsample offset task rt];
 

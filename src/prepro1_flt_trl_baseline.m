@@ -67,6 +67,7 @@ for g = 1:length(groups)
             data = ft_redefinetrial(cfg, data);
 
             % baseline correction (-200 - 0 ms)
+            disp('--- baseline correction ---');
             cfg = [];
             cfg.demean        = 'yes';
             cfg.baselinewindow = [-0.2 0];
