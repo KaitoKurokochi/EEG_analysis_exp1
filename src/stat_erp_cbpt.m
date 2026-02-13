@@ -10,27 +10,21 @@ if ~exist(res_dir, 'dir')
     mkdir(res_dir);
 end
 
+% neighbours
+load(fullfile(prj_dir, 'src', 'neighbours.mat'));
+
+%% 
 for ci = 1:num_type
     % read data
     disp('--- loading ERP data ---');
     % exp ERP
     load(fullfile(data_dir, ['exp_', conditions{ci}, '.mat'])); % include data
     data_exp = data;
-    clear data_v3;
+    clear data;
     % nov ERP
     load(fullfile(data_dir, ['nov_', conditions{ci}, '.mat'])); % include data
     data_nov = data;
-    clear data_v3;
-
-    %% layout 
-    cfg = [];
-    cfg.layout = 'easycapM11.mat'; 
-    lay = ft_prepare_layout(cfg);
-    % prepare neighbours
-    cfg = [];
-    cfg.method    = 'distance';
-    cfg.layout    = lay;
-    neighbours = ft_prepare_neighbours(cfg, data_exp);
+    clear data;
 
     % statistics
     cfg = [];
