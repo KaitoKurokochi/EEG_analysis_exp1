@@ -1,0 +1,141 @@
+% statistics of response time (go-condition) and accuracy of tasks  
+% compare between groups
+
+config;
+
+data_dir = fullfile(prj_dir, 'result', 'prepro1'); % set data dir
+res_dir = fullfile(prj_dir, 'result', 'stat_accuracy'); % set res dir
+if ~exist(res_dir, 'dir')
+    mkdir(res_dir);
+end
+
+%% exp
+disp('--- start exp ---');
+% count trls
+exp = [];
+exp.trialinfo = cell(1, 12);
+for pi = 1:12
+    for si = 1:5
+        seg_id = ['exp', num2str(pi), '-', num2str(si)];
+        fname = fullfile(data_dir, [seg_id, '.mat']);
+        if ~exist(fname, 'file')
+            continue;
+        end
+
+        disp('loading...');
+        load(fname); % include data
+
+        disp(['--- id: ', seg_id, ', start processing ---']);
+
+        if isempty(exp.trialinfo{pi})
+            exp.trialinfo{pi} = data.trialinfo;
+        else
+            exp.trialinfo{pi} = [exp.trialinfo{pi}; data.trialinfo];
+        end
+    end
+end
+
+% calculate accuracy - each
+disp('--- calculate accuracy ---')
+exp.cond_trls = zeros(12, num_type);
+exp.cond_cor_trls = zeros(12, num_type);
+exp.gng_trls = zeros(12, 2);
+exp.gng_cor_trls = zeros(12, 2);
+
+for pi = 1:12
+    % each cond
+    for ci = 1:num_type
+        exp.cond_cor_trls(pi, ci) = nnz(exp.trialinfo{pi}(:, 1) == ci);
+        exp.cond_trls(pi, ci) = nnz(exp.trialinfo{pi}(:, 1) == ci | exp.trialinfo{pi}(:, 1) == -ci);
+    end
+    % go/nogo
+    exp.gng_cor_trls(pi, 1) = nnz(exp.trialinfo{pi}(:, 1) == 1 | exp.trialinfo{pi}(:, 1) == 4);
+    exp.gng_trls(pi, 1) = nnz(exp.trialinfo{pi}(:, 1) == 1 | exp.trialinfo{pi}(:, 1) == 4 | exp.trialinfo{pi}(:, 1) == -1 | exp.trialinfo{pi}(:, 1) == -4);
+    exp.gng_cor_trls(pi, 2) = nnz(exp.trialinfo{pi}(:, 1) == 2 | exp.trialinfo{pi}(:, 1) == 3);
+    exp.gng_trls(pi, 2) = nnz(exp.trialinfo{pi}(:, 1) == 2 | exp.trialinfo{pi}(:, 1) == 3 | exp.trialinfo{pi}(:, 1) == -2 | exp.trialinfo{pi}(:, 1) == -3);
+end
+exp.p_cond_accuracy = exp.cond_cor_trls ./ exp.cond_trls; % each p, each cond
+exp.p_gng_accuracy = exp.gng_cor_trls ./ exp.gng_trls;
+exp.p_accuracy = sum(exp.cond_cor_trls, 2) ./ sum(exp.cond_trls, 2); % each p
+
+% save data
+save(fullfile(res_dir, 'exp.mat'), 'exp', '-v7.3');
+
+%% nov
+disp('--- start nov ---');
+% count trls
+nov = [];
+nov.trialinfo = cell(1, 12);
+for pi = 1:12
+    for si = 1:5
+        seg_id = ['nov', num2str(pi), '-', num2str(si)];
+        fname = fullfile(data_dir, [seg_id, '.mat']);
+        if ~exist(fname, 'file')
+            continue;
+        end
+
+        disp('loading...');
+        load(fname); % include data
+
+        disp(['--- id: ', seg_id, ', start processing ---']);
+
+        if isempty(nov.trialinfo{pi})
+            nov.trialinfo{pi} = data.trialinfo;
+        else
+            nov.trialinfo{pi} = [nov.trialinfo{pi}; data.trialinfo];
+        end
+    end
+end
+
+% calculate accuracy
+disp('--- calculate accuracy ---')
+nov.cond_trls = zeros(12, num_type);
+nov.cond_cor_trls = zeros(12, num_type);
+
+for pi = 1:12
+    % each cond
+    for ci = 1:num_type
+        nov.cond_cor_trls(pi, ci) = nnz(nov.trialinfo{pi}(:, 1) == ci);
+        nov.cond_trls(pi, ci) = nnz(nov.trialinfo{pi}(:, 1) == ci | nov.trialinfo{pi}(:, 1) == -ci);
+    end
+    % go/nogo
+    nov.gng_cor_trls(pi, 1) = nnz(nov.trialinfo{pi}(:, 1) == 1 | nov.trialinfo{pi}(:, 1) == 4);
+    nov.gng_trls(pi, 1) = nnz(nov.trialinfo{pi}(:, 1) == 1 | nov.trialinfo{pi}(:, 1) == 4 | nov.trialinfo{pi}(:, 1) == -1 | nov.trialinfo{pi}(:, 1) == -4);
+    nov.gng_cor_trls(pi, 2) = nnz(nov.trialinfo{pi}(:, 1) == 2 | nov.trialinfo{pi}(:, 1) == 3);
+    nov.gng_trls(pi, 2) = nnz(nov.trialinfo{pi}(:, 1) == 2 | nov.trialinfo{pi}(:, 1) == 3 | nov.trialinfo{pi}(:, 1) == -2 | nov.trialinfo{pi}(:, 1) == -3);
+end
+nov.accuracy = nov.cond_cor_trls ./ nov.cond_trls; % each p, each cond
+nov.p_gng_accuracy = nov.gng_cor_trls ./ nov.gng_trls;
+nov.p_accuracy = sum(nov.cond_cor_trls, 2) ./ sum(nov.cond_trls, 2); % each p
+
+% save data
+save(fullfile(res_dir, 'nov.mat'), 'nov', '-v7.3');
+
+%% stat
+stat = [];
+var_names = {'group', 'go_accuracy', 'nogo_accuracy'};
+var_types = {'categorical', 'double', 'double'};
+
+stat.tbl = table('Size', [0, length(var_names)], ...
+            'VariableTypes', var_types, ...
+            'VariableNames', var_names);
+
+% exp 
+for pi = 1:12
+    new_row = {categorical({'exp'}), exp.p_gng_accuracy(pi, 1), exp.p_gng_accuracy(pi, 2)};
+    stat.tbl(end+1, :) = new_row;
+end
+% nov 
+for pi = 1:12
+    new_row = {categorical({'nov'}), nov.p_gng_accuracy(pi, 1), nov.p_gng_accuracy(pi, 2)};
+    stat.tbl(end+1, :) = new_row;
+end
+
+% 2way anova
+within_struct = table({'Go'; 'NoGo'}, 'VariableNames', {'Condition'});
+rm = fitrm(stat.tbl, 'go_accuracy-nogo_accuracy ~ group', 'WithinDesign', within_struct);
+stat.ranovatbl = ranova(rm, 'WithinModel', 'Condition');
+% multi compare
+stat.mc = multcompare(rm, 'group', 'By', 'Condition', 'ComparisonType', 'bonferroni');
+
+save(fullfile(res_dir, 'stat.mat'), 'stat', '-v7.3');
