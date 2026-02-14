@@ -60,7 +60,7 @@ for i = 1:num_trials
 
         if s2_ev <= s4_ev && s4_ev <= s32_ev
             is_pressed(i) = 1;
-            dt_samples = EVsample(s32_id) - EVsample(s2_id);
+            dt_samples = EVsample(s4_id) - EVsample(s2_id);
             rt(i) = dt_samples / hdr.Fs;
         end
     end
