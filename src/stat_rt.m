@@ -34,3 +34,8 @@ end
 %% stat
 stat = [];
 [stat.h, stat.p, stat.ci, stat.stats] = ttest2(exp.m_rt, nov.m_rt);
+
+%% save data
+save(fullfile(res_dir, 'exp.mat'), 'exp');
+save(fullfile(res_dir, 'nov.mat'), 'nov');
+save(fullfile(res_dir, 'stat.mat'), 'stat');
