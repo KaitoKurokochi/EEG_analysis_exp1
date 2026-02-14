@@ -41,6 +41,8 @@ for g = 1:length(groups)
             % filtering (1-100)
             disp('--- filtering ---')
             cfg = [];
+            % remove EOG 
+            cfg.channel       = {'all', '-EOG'};
             % band-pass filter
             cfg.bpfilter      = 'yes';
             cfg.bpfilttype    = 'firws';
