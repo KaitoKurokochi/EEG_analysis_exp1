@@ -24,7 +24,7 @@ for i = 1:length(groups)
             
             disp(['--- id: ', id, ', start processing ---']);
 
-            fig = figure('Position', [100, 100, 1600, 1200]);
+            fig = figure('Position', [100, 100, 1600, 1200], 'Visible', 'off');
             % multiplot
             cfg = [];
             cfg.layout        = 'easycapM11.lay';
