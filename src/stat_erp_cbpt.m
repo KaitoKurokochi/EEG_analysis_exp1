@@ -1,5 +1,5 @@
 % statistics: cluster-based permutation test of ERP for each condition 
-% data is simple trial x time x amplitude data
+% data is trial x time x amplitude ERP data
 % compare between groups
 
 config;
@@ -14,7 +14,7 @@ end
 load(fullfile(prj_dir, 'src', 'neighbours.mat'));
 
 %% 
-for ci = 1:num_type
+for ci = 1:length(conditions)
     % read data
     disp('--- loading ERP data ---');
     % exp ERP
@@ -28,11 +28,7 @@ for ci = 1:num_type
 
     % statistics
     cfg = [];
-    if strcmp(conditions{ci}, 'ff') || strcmp(conditions{ci}, 'sf')
-        cfg.latency = [0 0.5];
-    else
-        cfg.latency = [0 0.57];
-    end
+    cfg.latency          = [0.0 0.6];
     cfg.method           = 'montecarlo';
     cfg.statistic        = 'indepsamplesT'; 
     cfg.correctm         = 'cluster';
