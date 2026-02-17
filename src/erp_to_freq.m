@@ -1,5 +1,8 @@
 % erp_to_freq: convert ERP data to frequency data
+% no method -> no normalization 
+% sum -> 
 
+%% config 
 config;
 
 data_dir = fullfile(prj_dir, 'result', 'erp_group_cond'); % set data dir
