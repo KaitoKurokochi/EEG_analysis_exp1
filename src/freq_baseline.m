@@ -79,18 +79,23 @@ for gi = 1:length(groups)
     for ci = 1:length(conditions)
         disp('loading...');
         load(fullfile(data_dir, [groups{gi}, '_', conditions{ci}, '_bl_', baseline_type, '.mat'])); % include freq
-        for b = 2:length(bands)
+        for bi = 2:length(bands)
+            % select data
+            cfg = [];
+            cfg.frequency   = bands{bi, 1};
+            freq_b = ft_selectdata(cfg, freq);
+
             % figure
             fig = figure('Position', [100, 100, 1600, 1200]);
             % multiplot
             cfg = [];
             cfg.layout           = 'easycapM11.mat';
-            cfg.ylim             = [bands{b, 1}(1), bands{b, 1}(2)];
+            % cfg.ylim             = [bands{b, 1}(1), bands{b, 1}(2)];
             cfg.zlim             = 'maxabs';
             % cfg.zlim             = bands{b, 3};
             cfg.showlabels       = 'yes';
-            ft_multiplotTFR(cfg, freq);
-            saveas(fig, fullfile(res_dir, [groups{gi}, '_', conditions{ci}, '_', bands{b, 2}, '_', baseline_type, '.jpg']));
+            ft_multiplotTFR(cfg, freq_b);
+            saveas(fig, fullfile(res_dir, [groups{gi}, '_', conditions{ci}, '_', bands{bi, 2}, '_', baseline_type, '.jpg']));
             close(fig);
         end
     end
@@ -117,19 +122,21 @@ for gi = 1:length(groups)
         % for each 50ms
         for t = 0:0.05:0.55
             for b = 2:length(bands)
-                t_strt = t;
-                t_end = t+0.05;
-    
+                % select data
+                cfg = [];
+                cfg.latency     = [t, t+0.05]; % t ~ 50ms
+                cfg.frequency   = bands{b, 1};
+                freq_t_b = ft_selectdata(cfg, freq);
+
+                % set fig
                 fig = figure('Position', [100, 100, 800, 600], 'Visible', 'off');
     
                 cfg = [];
-                cfg.xlim               = [t_strt, t_end]; % time band
-                cfg.ylim               = [bands{b, 1}(1), bands{b, 1}(2)]; % freq band
                 cfg.zlim               = 'maxabs';
                 cfg.colorbar           = 'yes';
                 cfg.layout             = 'easycapM11.mat';
-                ft_topoplotTFR(cfg, freq);
-                saveas(fig, fullfile(res_dir, [groups{gi}, '_', conditions{ci}, '_', bands{b, 2}, '_', num2str(t_strt*1000), '_', num2str(t_end*1000), '_', baseline_type, '.jpg']));
+                ft_topoplotTFR(cfg, freq_t_b);
+                saveas(fig, fullfile(res_dir, [groups{gi}, '_', conditions{ci}, '_', bands{b, 2}, '_', num2str(t*1000), '_', num2str((t+0.05)*1000), '_', baseline_type, '.jpg']));
                 close(fig);
             end
         end
