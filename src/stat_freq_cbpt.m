@@ -13,7 +13,7 @@ end
 % neighbours
 load(fullfile(prj_dir, 'src', 'neighbours.mat'));
 
-%% 
+%% stat 
 for ci = 1:length(conditions)
     % read data
     disp('--- loading freq data ---');
@@ -43,4 +43,13 @@ for ci = 1:length(conditions)
 
     % save data
     save(fullfile(res_dir, [conditions{ci}, '.mat']), 'stat', '-v7.3');
+end
+
+%% figure 
+config;
+
+data_dir = fullfile(prj_dir, 'result', 'freq_group_cond'); % set data dir
+res_dir = fullfile(prj_dir, 'result', 'stat_freq_cbpt'); % set res dir
+if ~exist(res_dir, 'dir')
+    mkdir(res_dir);
 end
