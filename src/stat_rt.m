@@ -1,4 +1,4 @@
-% statistics of response time (go-condition)
+%% statistics of response time (go-condition)
 % compare between groups
 
 config;
@@ -13,7 +13,7 @@ end
 load(fullfile(data_dir, 'exp.mat'));
 load(fullfile(data_dir, 'nov.mat'));
 
-%% collect RT 
+% collect RT 
 % exp
 exp.m_rt = zeros(1, 12);
 exp.rts = cell(1, 12);
@@ -31,11 +31,13 @@ for pi = 1:12
     nov.m_rt(1, pi) = mean(nov.rts{1, pi});
 end
 
-%% stat
+% stat
 stat = [];
 [stat.h, stat.p, stat.ci, stat.stats] = ttest2(exp.m_rt, nov.m_rt);
 
-%% save data
+% save data
 save(fullfile(res_dir, 'exp.mat'), 'exp');
 save(fullfile(res_dir, 'nov.mat'), 'nov');
 save(fullfile(res_dir, 'stat.mat'), 'stat');
+
+%% figure statistics of RT

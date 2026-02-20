@@ -1,5 +1,5 @@
-% statistics accuracy of tasks  
-% compare between groups
+%% statistics accuracy of tasks  
+% compare between groups, with two-way ANOVA
 
 config;
 
@@ -13,18 +13,18 @@ end
 load(fullfile(data_dir, 'exp.mat'));
 load(fullfile(data_dir, 'nov.mat'));
 
-%% exp
+% exp
 disp('--- start exp ---');
 % calculate accuracy - each
 disp('--- calculate accuracy ---')
-exp.cond_trls = zeros(12, num_type);
-exp.cond_cor_trls = zeros(12, num_type);
+exp.cond_trls = zeros(12, length(conditions));
+exp.cond_cor_trls = zeros(12, length(conditions));
 exp.gng_trls = zeros(12, 2);
 exp.gng_cor_trls = zeros(12, 2);
 
 for pi = 1:12
     % each cond
-    for ci = 1:num_type
+    for ci = 1:length(conditions)
         exp.cond_cor_trls(pi, ci) = nnz(exp.trialinfo{pi}(:, 1) == ci);
         exp.cond_trls(pi, ci) = nnz(exp.trialinfo{pi}(:, 1) == ci | exp.trialinfo{pi}(:, 1) == -ci);
     end
@@ -41,17 +41,17 @@ exp.p_accuracy = sum(exp.cond_cor_trls, 2) ./ sum(exp.cond_trls, 2); % each p
 % save data
 save(fullfile(res_dir, 'exp.mat'), 'exp', '-v7.3');
 
-%% nov
+% nov
 disp('--- start nov ---');
 
 % calculate accuracy
 disp('--- calculate accuracy ---')
-nov.cond_trls = zeros(12, num_type);
-nov.cond_cor_trls = zeros(12, num_type);
+nov.cond_trls = zeros(12, length(conditions));
+nov.cond_cor_trls = zeros(12, length(conditions));
 
 for pi = 1:12
     % each cond
-    for ci = 1:num_type
+    for ci = 1:length(conditions)
         nov.cond_cor_trls(pi, ci) = nnz(nov.trialinfo{pi}(:, 1) == ci);
         nov.cond_trls(pi, ci) = nnz(nov.trialinfo{pi}(:, 1) == ci | nov.trialinfo{pi}(:, 1) == -ci);
     end
@@ -68,7 +68,7 @@ nov.p_accuracy = sum(nov.cond_cor_trls, 2) ./ sum(nov.cond_trls, 2); % each p
 % save data
 save(fullfile(res_dir, 'nov.mat'), 'nov', '-v7.3');
 
-%% stat
+% stat
 stat = [];
 var_names = {'group', 'go_accuracy', 'nogo_accuracy'};
 var_types = {'categorical', 'double', 'double'};
@@ -96,3 +96,10 @@ stat.ranovatbl = ranova(rm, 'WithinModel', 'Condition');
 stat.mc = multcompare(rm, 'group', 'By', 'Condition', 'ComparisonType', 'bonferroni');
 
 save(fullfile(res_dir, 'stat.mat'), 'stat', '-v7.3');
+
+%% calculate some values
+% exp trials
+s_trls_exp = sum(exp.gng_trls);
+s_cor_trls_exp = sum(exp.gng_cor_trls);
+ac_exp = s_cor_trls_exp ./ s_trls_exp;
+
