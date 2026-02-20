@@ -1,6 +1,7 @@
 %% statistics accuracy of tasks  
 % compare between groups, with two-way ANOVA
 
+clear;
 config;
 
 data_dir = fullfile(prj_dir, 'result', 'trialinfo'); % set data dir
@@ -102,4 +103,37 @@ save(fullfile(res_dir, 'stat.mat'), 'stat', '-v7.3');
 s_trls_exp = sum(exp.gng_trls);
 s_cor_trls_exp = sum(exp.gng_cor_trls);
 ac_exp = s_cor_trls_exp ./ s_trls_exp;
+% nov trials
+s_trls_nov = sum(nov.gng_trls);
+s_cor_trls_nov = sum(nov.gng_cor_trls);
+ac_nov = s_cor_trls_nov ./ s_trls_nov;
 
+%% figure result
+
+clear;
+config;
+
+data_dir = fullfile(prj_dir, 'result', 'stat_accuracy'); % set res dir
+res_dir = fullfile(prj_dir, 'result', 'fig_stat_accuracy'); % set data dir
+if ~exist(res_dir, 'dir')
+    mkdir(res_dir);
+end
+
+% read data
+load(fullfile(data_dir, 'stat.mat'));
+
+% create table
+plot_tbl = stack(stat.tbl, {'go_accuracy', 'nogo_accuracy'}, ...
+    'NewDataVariableName', 'accuracy', ...
+    'IndexVariableName', 'condition');
+plot_tbl.condition = renamecats(categorical(plot_tbl.condition), ...
+    {'go_accuracy', 'nogo_accuracy'}, {'Go Accuracy', 'No-Go Accuracy'});
+
+fig = figure;
+boxchart(plot_tbl.condition, plot_tbl.accuracy, 'GroupByColor', plot_tbl.group);
+legend('Experienced', 'Inexperienced', 'Location', 'southeast');
+ylabel('Accuracy');
+title('Comparison of Go and No-Go Accuracy');
+
+saveas(fig, fullfile(res_dir, 'boxplog.jpg'))
+close(fig)
