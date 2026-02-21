@@ -27,7 +27,7 @@ for gi = 1:length(groups)
         % baseline correction 
         cfg = [];
         cfg.baseline     = [-0.2 0.0];
-        cfg.baselinetype = baseline_type;
+        cfg.baselinetype = 'db';
         freq = ft_freqbaseline(cfg, freq);
 
         % save data
