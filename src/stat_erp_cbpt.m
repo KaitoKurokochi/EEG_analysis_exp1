@@ -1,7 +1,7 @@
 % statistics: cluster-based permutation test of ERP for each condition 
 % data is trial x time x amplitude ERP data
 % compare between groups
-
+clear;
 config;
 
 data_dir = fullfile(prj_dir, 'result', 'erp_group_cond'); % set data dir
@@ -13,7 +13,7 @@ end
 % neighbours
 load(fullfile(prj_dir, 'src', 'neighbours.mat'));
 
-%% statistics - erp cbpt
+% statistics - erp cbpt
 for ci = 1:length(conditions)
     % read data
     disp('--- loading ERP data ---');
@@ -32,6 +32,7 @@ for ci = 1:length(conditions)
     cfg.method           = 'montecarlo';
     cfg.statistic        = 'indepsamplesT'; 
     cfg.correctm         = 'cluster';
+    cfg.clusteralpha     = 0.01; % more strict
     cfg.numrandomization = 10000;
     cfg.neighbours       = neighbours;
     % design
