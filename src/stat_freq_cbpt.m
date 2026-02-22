@@ -14,105 +14,50 @@ end
 % neighbours
 load(fullfile(prj_dir, 'src', 'neighbours.mat'));
 
-% stat 
-for ci = 1:length(conditions)
-    % read data
-    disp('--- loading freq data ---');
-    % exp freq
-    load(fullfile(data_dir, ['exp_', conditions{ci}, '_bl_db.mat'])); % include freq
-    freq_exp = freq;
-    clear freq;
-    % nov ERP
-    load(fullfile(data_dir, ['nov_', conditions{ci}, '_bl_db.mat'])); % include freq
-    freq_nov = freq;
-    clear freq;
-
-    % each band
-    for bi = 1:length(bands)
-        % statistics
-        cfg = [];
-        cfg.latency          = [0.0 0.6];
-        cfg.frequency        = bands{bi, 1};
-        cfg.method           = 'montecarlo';
-        cfg.statistic        = 'indepsamplesT'; 
-        cfg.correctm         = 'cluster';
-        cfg.numrandomization = 10000;
-        cfg.neighbours       = neighbours;
-        % design
-        n_trl_exp = size(freq_exp.powspctrm, 1);
-        n_trl_nov = size(freq_nov.powspctrm, 1);
-        cfg.design = [ones(1, n_trl_exp), 2*ones(1, n_trl_nov)];
-        cfg.ivar   = 1;
-        stat = ft_freqstatistics(cfg, freq_exp, freq_nov);
-    
-        % save data
-        save(fullfile(res_dir, [conditions{ci}, '_', bands{bi, 2}, '.mat']), 'stat', '-v7.3');
-    end
-end
-
-%% figure - time x freq
-clear;
-config;
-
-stat_data_dir = fullfile(prj_dir, 'result', 'stat_freq_cbpt'); % set data dir
-freq_data_dir = fullfile(prj_dir, 'result', 'freq_group_cond'); 
-res_dir = fullfile(prj_dir, 'result', 'fig_stat_freq_cbpt_tfr'); % set res dir
-if ~exist(res_dir, 'dir')
-    mkdir(res_dir);
-end
+% bands
+bands = { ...
+    % [1 4],   'Delta',      [0 0.1]; ...
+    [4 7],   'Theta',      [0 0.025]; ...
+    [7 13],  'alpha',      [0 17*10^-3]; ...
+    [13 30], 'beta',      [0 7*10^-3]; ...
+    [30 45], 'Low_gamma',  [0 12.5*10^-4]; ...
+    [60 90], 'High_gamma', [0 5*10^-6]};
 
 % stat 
 for ci = 1:length(conditions)
     % read data
     disp('--- loading freq data ---');
     % exp freq
-    load(fullfile(freq_data_dir, ['exp_', conditions{ci}, '_bl_db.mat'])); % include freq
+    load(fullfile(data_dir, ['exp_', conditions{ci}, '.mat'])); % include freq
     freq_exp = freq;
     clear freq;
     % nov ERP
-    load(fullfile(freq_data_dir, ['nov_', conditions{ci}, '_bl_db.mat'])); % include freq
+    load(fullfile(data_dir, ['nov_', conditions{ci}, '.mat'])); % include freq
     freq_nov = freq;
     clear freq;
 
-    % calculate mean of freq
-    cfg = [];
-    cfg.keeptrials = 'no';
-    freq_exp = ft_freqdescriptives(cfg, freq_exp);
-    freq_nov = ft_freqdescriptives(cfg, freq_nov);
-
-    % calculate difference
-    cfg = [];
-    cfg.operation = 'x1 - x2';
-    cfg.parameter = 'powspctrm';
-    freq_diff = ft_math(cfg, freq_exp, freq_nov); % pos: exp, neg: nov
-
-    % each band
+    % each band, each time
     for bi = 1:length(bands)
-        % select band 
-        cfg = [];
-        cfg.frequency   = bands{bi, 1};
-        freq_diff_b = ft_selectdata(cfg, freq_diff);
-
-        % load mask
-        load(fullfile(stat_data_dir, [conditions{ci}, '_', bands{bi, 2}, '.mat'])); % include stat
-        freq_diff_b.mask = stat.mask;
-
-        % figure
-        cfg = [];
-        cfg.layout        = 'easycapM11.mat';
-        cfg.maskparameter = 'mask';
-        cfg.maskstyle     = 'opacity';
-        cfg.maskalpha     = 0;
-        cfg.zlim      = 'maxabs';
-        cfg.colorbar  = 'yes';
-
-        fig = figure('Position', [100, 100, 1600, 1200]);
-        ft_multiplotTFR(cfg, freq_diff_b);
-        title([conditions{ci}, ' : ', bands{bi, 2}, ' (pos: exp, neg: nov)']);
-
-        % save
-        saveas(fig, fullfile(res_dir, [conditions{ci}, '_', bands{bi, 2}, '.jpg']));
-        close(fig);
+        for t = 0:0.05:0.55
+            % statistics
+            cfg = [];
+            cfg.latency          = [t-0.001, t+0.001]; % t, around 2ms;
+            cfg.frequency        = bands{bi, 1};
+            cfg.method           = 'montecarlo';
+            cfg.statistic        = 'indepsamplesT'; 
+            cfg.correctm         = 'cluster';
+            cfg.numrandomization = 10000;
+            cfg.neighbours       = neighbours;
+            % design
+            n_trl_exp = size(freq_exp.powspctrm, 1);
+            n_trl_nov = size(freq_nov.powspctrm, 1);
+            cfg.design = [ones(1, n_trl_exp), 2*ones(1, n_trl_nov)];
+            cfg.ivar   = 1;
+            stat = ft_freqstatistics(cfg, freq_exp, freq_nov);
+        
+            % save data
+            save(fullfile(res_dir, [conditions{ci}, '_', bands{bi, 2}, '_', num2str(t*1000), '.mat']), 'stat', '-v7.3');
+        end
     end
 end
 
@@ -127,65 +72,67 @@ if ~exist(res_dir, 'dir')
     mkdir(res_dir);
 end
 
+% bands
+bands = { ...
+    % [1 4],   'Delta',      [0 0.1]; ...
+    [4 7],   'Theta',      [0 0.025]; ...
+    [7 13],  'alpha',      [0 17*10^-3]; ...
+    [13 30], 'beta',      [0 7*10^-3]; ...
+    [30 45], 'Low_gamma',  [0 12.5*10^-4]; ...
+    [60 90], 'High_gamma', [0 5*10^-6]};
+
 % stat 
 for ci = 1:length(conditions)
     % read data
     disp('--- loading freq data ---');
     % exp freq
-    load(fullfile(freq_data_dir, ['exp_', conditions{ci}, '_bl_db.mat'])); % include freq
+    load(fullfile(freq_data_dir, ['exp_', conditions{ci}, '.mat'])); % include freq
     freq_exp = freq;
     clear freq;
     % nov ERP
-    load(fullfile(freq_data_dir, ['nov_', conditions{ci}, '_bl_db.mat'])); % include freq
+    load(fullfile(freq_data_dir, ['nov_', conditions{ci}, '.mat'])); % include freq
     freq_nov = freq;
     clear freq;
 
-    % calculate mean of freq
-    cfg = [];
-    cfg.keeptrials = 'no';
-    freq_exp = ft_freqdescriptives(cfg, freq_exp);
-    freq_nov = ft_freqdescriptives(cfg, freq_nov);
-
-    % calculate difference
-    cfg = [];
-    cfg.operation = 'x1 - x2';
-    cfg.parameter = 'powspctrm';
-    freq_diff = ft_math(cfg, freq_exp, freq_nov); % pos: exp, neg: nov
-
-    % each band
+    % each band, each time
     for bi = 1:length(bands)
-        % load mask
-        load(fullfile(stat_data_dir, [conditions{ci}, '_', bands{bi, 2}, '.mat'])); % include stat
-
         for t = 0:0.05:0.55
-            % select latency
+            % extract data (band, time) 
             cfg = [];
-            cfg.latency     = [t, t+0.05]; % t ~ 50ms
             cfg.frequency   = bands{bi, 1};
-            freq_diff_b_t = ft_selectdata(cfg, freq_diff);
+            cfg.latency     = [t-0.001, t+0.001]; % t, around 2ms;
+            freq_exp_b_t = ft_selectdata(cfg, freq_exp);
+            freq_nov_b_t = ft_selectdata(cfg, freq_nov);
 
+            % calculate difference
             cfg = [];
-            cfg.latency     = [t, t+0.05]; % t ~ 50ms
-            stat_b_t = ft_selectdata(cfg, stat);
+            cfg.operation = 'x1 - x2';
+            cfg.parameter = 'powspctrm';
+            freq_diff = ft_math(cfg, freq_exp_b_t, freq_nov_b_t); % pos: exp, neg: nov
 
-            % add mask 
-            freq_diff_b_t.mask = stat_b_t.mask;
+            % load stat data
+            load(fullfile(stat_data_dir, [conditions{ci}, '_', bands{bi, 2}, '_', num2str(t*1000), '.mat'])); % include stat
 
             % figure
             cfg = [];
-            cfg.layout        = 'easycapM11.mat';
-            cfg.maskparameter = 'mask';
-            cfg.maskstyle     = 'opacity';
-            cfg.maskalpha     = 0;
-            cfg.zlim      = 'maxabs';
-            cfg.colorbar  = 'yes';
+            cfg.colorbar           = 'yes';
+            cfg.layout             = 'easycapM11.mat';
+            cfg.colormap           = 'jet';
+            cfg.zlim               = 'maxabs';
+            % diff
+            cfg.highlight          = 'on';
+            cfg.highlightchannel   = find(stat.mask);
+            cfg.highlightsymbol    = '*';
+            cfg.highlightcolor     = [0 0 0];
+            cfg.highlightsize      = 10;
+            cfg.highlightfontsize  = 12;
     
             fig = figure;
-            ft_topoplotTFR(cfg, freq_diff_b_t);
-            title([conditions{ci}, ' : ', bands{bi, 2}, ', ' num2str(t*1000), '-', num2str((t+0.05)*1000), ' (pos: exp, neg: nov)']);
+            ft_topoplotTFR(cfg, freq_diff);
+            title([conditions{ci}, ' : ', bands{bi, 2}, ', ' num2str(t*1000) ' (pos: exp, neg: nov)']);
 
             % save
-            saveas(fig, fullfile(res_dir, [conditions{ci}, '_', bands{bi, 2}, '_', num2str(t*1000), '_', num2str((t+0.05)*1000), '.jpg']));
+            saveas(fig, fullfile(res_dir, [conditions{ci}, '_', bands{bi, 2}, '_', num2str(t*1000) '.jpg']));
             close(fig);
         end
     end
