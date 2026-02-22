@@ -87,7 +87,9 @@ for ci = 1:length(conditions)
     cfg.layout = 'easycapM11.mat';
     cfg.maskparameter = 'mask';
     cfg.maskstyle     = 'box';
-    cfg.comment = ['Blue: ', conditions{ci}, ' (Exp), Red: Novice'];
+    cfg.linewidth     = 1.0;
+    cfg.linecolor     = 'br';
+    cfg.comment = ['Condition: ', conditions{ci}, '(Blue: experienced, Red: Inexperienced)'];
     cfg.showlabels = 'yes';
     cfg.maskfacealpha = '0.2';
 
