@@ -68,11 +68,11 @@ for g = 1:length(groups)
             cfg = ft_definetrial(cfg);
             data = ft_redefinetrial(cfg, data);
 
-            % baseline correction (-100 - 100 ms)
+            % baseline correction (-100 - 0 ms)
             disp('--- baseline correction ---');
             cfg = [];
             cfg.demean        = 'yes';
-            cfg.baselinewindow = [-0.1 0.1]; 
+            cfg.baselinewindow = [-0.1 0.0]; 
             data = ft_preprocessing(cfg, data);
             
             % save prepro1
