@@ -15,7 +15,7 @@ end
 
 data_fnames = {dir(fullfile(data_dir, '*.mat')).name};
 
-%% ica 
+% ica 
 for i = 1:length(data_fnames)
     load(fullfile(data_dir, data_fnames{i})); % include data
 
@@ -115,3 +115,4 @@ for i = 1:length(groups)
         end
     end
 end
+
