@@ -20,13 +20,13 @@ for gi = 1:length(groups)
         cfg.output      = 'pow';
         cfg.keeptrials  = 'yes';
         cfg.foi         = logspace(log10(3),log10(90),30);
-        cfg.width       = logspace(log10(3),log10(30),30);
+        cfg.width       = logspace(log10(3),log10(30),30); % num of cycles
         cfg.toi         = data.time{1}(1) : 0.05 : data.time{1}(end);
         freq = ft_freqanalysis(cfg, data);
 
         % baseline correction 
         cfg = [];
-        cfg.baseline     = [-0.2 0.0];
+        cfg.baseline     = [-0.1 0.0]; 
         cfg.baselinetype = 'db';
         freq = ft_freqbaseline(cfg, freq);
 
@@ -127,6 +127,7 @@ for gi = 1:length(groups)
     
                 cfg = [];
                 cfg.zlim               = [vals.mn(bi), vals.mx(bi)];
+                % cfg.zlim               = [-vals.mx_abs(bi), vals.mx_abs(bi)];
                 cfg.colorbar           = 'yes';
                 cfg.layout             = 'easycapM11.mat';
                 cfg.colormap           = 'jet';
