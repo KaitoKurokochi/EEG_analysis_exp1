@@ -41,12 +41,22 @@ for ci = 1:length(conditions)
         for t = 0:0.05:0.55
             % statistics
             cfg = [];
+            cfg.channel          = {'all', '-EOG'};
+            cfg.parameter        = 'powspctrm';
+            cfg.method           = 'ft_statistics_montecarlo';
+            cfg.statistic        = 'ft_statfun_indepsamplesT';
+            cfg.correctm         = 'cluster';
+            cfg.clusteralpha     = 0.05;
+            cfg.clusterstatistic = 'maxsize';
+            cfg.clusterthreshold = 'nonparametric_common';
+            cfg.minnbchan        = 2;
+            cfg.tail             = 0;
+            cfg.clustertail      = 0;
+            cfg.alpha            = 0.05;
+            cfg.correcttail      = 'alpha';
+            cfg.numrandomization = 10000;
             cfg.latency          = [t-0.001, t+0.001]; % t, around 2ms;
             cfg.frequency        = bands{bi, 1};
-            cfg.method           = 'montecarlo';
-            cfg.statistic        = 'indepsamplesT'; 
-            cfg.correctm         = 'cluster';
-            cfg.clusteralpha     = 0.01;
             cfg.numrandomization = 10000;
             cfg.neighbours       = neighbours;
             % design
