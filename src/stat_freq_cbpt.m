@@ -14,7 +14,6 @@ end
 % neighbours
 load(fullfile(prj_dir, 'src', 'neighbours.mat'));
 
-%%
 % bands
 bands = { ...
     % [1 4],   'Delta',      [0 0.1]; ...
