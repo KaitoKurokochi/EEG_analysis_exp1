@@ -30,9 +30,14 @@ for ci = 1:length(conditions)
     cfg = [];
     cfg.latency          = [0.0 0.6];
     cfg.method           = 'montecarlo';
-    cfg.statistic        = 'indepsamplesT'; 
+    cfg.statistic        = 'ft_statfun_indepsamplesT'; 
     cfg.correctm         = 'cluster';
-    cfg.clusteralpha     = 0.01; % more strict
+    cfg.clusteralpha     = 0.01;
+    cfg.clusterstatistic = 'maxsum';
+    cfg.minnbchan        = 3;
+    cfg.tail             = 0;
+    cfg.clustertail      = 0;
+    cfg.alpha            = 0.05;
     cfg.numrandomization = 10000;
     cfg.neighbours       = neighbours;
     % design

@@ -14,6 +14,7 @@ end
 % neighbours
 load(fullfile(prj_dir, 'src', 'neighbours.mat'));
 
+%%
 % bands
 bands = { ...
     % [1 4],   'Delta',      [0 0.1]; ...
@@ -46,10 +47,10 @@ for ci = 1:length(conditions)
             cfg.method           = 'ft_statistics_montecarlo';
             cfg.statistic        = 'ft_statfun_indepsamplesT';
             cfg.correctm         = 'cluster';
-            cfg.clusteralpha     = 0.05;
+            cfg.clusteralpha     = 0.01;
             cfg.clusterstatistic = 'maxsize';
             cfg.clusterthreshold = 'nonparametric_common';
-            cfg.minnbchan        = 2;
+            cfg.minnbchan        = 3;
             cfg.tail             = 0;
             cfg.clustertail      = 0;
             cfg.alpha            = 0.05;
