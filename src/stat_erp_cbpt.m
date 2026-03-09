@@ -34,7 +34,7 @@ for ci = 1:length(conditions)
     cfg.correctm         = 'cluster';
     cfg.clusteralpha     = 0.01;
     cfg.clusterstatistic = 'maxsum';
-    cfg.minnbchan        = 3;
+    cfg.minnbchan        = 4;
     cfg.tail             = 0;
     cfg.clustertail      = 0;
     cfg.alpha            = 0.05;
@@ -158,6 +158,239 @@ for ci = 1:length(conditions)
         ylabel('Amplitude (uV)');
         
         save_name = fullfile(res_dir, [conditions{ci}, '_', current_chan, '.jpg']);
+        saveas(fig, save_name);
+        close(fig);
+    end
+end
+
+%% extract each cluster
+clear;
+config;
+
+data_erp_dir = fullfile(prj_dir, 'result', 'erp_group_cond');
+data_stat_dir = fullfile(prj_dir, 'result', 'stat_erp_cbpt');
+res_dir = fullfile(prj_dir, 'result', 'stat_erp_cond_cluster');
+alpha = 0.05;
+
+if ~exist(res_dir, 'dir')
+    mkdir(res_dir);
+end
+
+for ci = 1:length(conditions)
+    load(fullfile(data_erp_dir, ['exp_', conditions{ci}, '.mat']));
+    data_exp_all = data; clear data;
+    load(fullfile(data_erp_dir, ['nov_', conditions{ci}, '.mat']));
+    data_nov_all = data; clear data;
+    load(fullfile(data_stat_dir, [conditions{ci}, '.mat']));
+
+    % pos clusters
+    for cli = 1:length(stat.posclusters)
+        if stat.posclusters(cli).prob >= alpha
+            break
+        end
+    
+        % extract cluster from labelmat
+        cluster_mask = (stat.posclusterslabelmat == cli);
+    
+        % find channels
+        chan_idx = find(any(cluster_mask, 2));
+        chan_names = stat.label(chan_idx);
+    
+        % find time
+        time_idx = find(any(cluster_mask, 1));
+        time_range = stat.time(time_idx);
+
+        % extract (time x chan) 
+        cfg = [];
+        cfg.channel            = chan_names;
+        cfg.latency            = [0.0 0.6];
+        data_exp = ft_timelockanalysis(cfg, data_exp_all);
+        data_nov = ft_timelockanalysis(cfg, data_nov_all);
+
+        % data
+        data = [];
+        data.erp_exp = data_exp;
+        data.erp_nov = data_nov;
+        data.mask = cluster_mask(chan_idx, :);
+
+        % save data
+        save(fullfile(res_dir, [conditions{ci}, '_pos', num2str(cli), '.mat']), 'data', '-v7.3');
+    end
+
+    % neg clusters
+    for cli = 1:length(stat.negclusters)
+        if stat.negclusters(cli).prob >= alpha
+            break
+        end
+    
+        % extract cluster from labelmat
+        cluster_mask = (stat.negclusterslabelmat == cli);
+    
+        % find channels
+        chan_idx = find(any(cluster_mask, 2));
+        chan_names = stat.label(chan_idx);
+    
+        % find time
+        time_idx = find(any(cluster_mask, 1));
+        time_range = stat.time(time_idx);
+
+        % extract (time x chan) 
+        cfg = [];
+        cfg.channel            = chan_names;
+        cfg.latency            = [0.0 0.6];
+        data_exp = ft_timelockanalysis(cfg, data_exp_all);
+        data_nov = ft_timelockanalysis(cfg, data_nov_all);
+
+        % data
+        data = [];
+        data.erp_exp = data_exp;
+        data.erp_nov = data_nov;
+        data.mask = cluster_mask(chan_idx, :);
+
+        % save data
+        save(fullfile(res_dir, [conditions{ci}, '_neg', num2str(cli), '.mat']), 'data', '-v7.3');
+    end
+end
+
+%% figure each cluster
+clear;
+config;
+
+data_erp_dir = fullfile(prj_dir, 'result', 'stat_erp_cond_cluster');
+data_stat_dir = fullfile(prj_dir, 'result', 'stat_erp_cbpt');
+res_dir = fullfile(prj_dir, 'result', 'fig_stat_erp_cond_cluster');
+alpha = 0.05;
+
+if ~exist(res_dir, 'dir')
+    mkdir(res_dir);
+end
+
+for ci = 1:length(conditions)
+    % load stat
+    load(fullfile(data_stat_dir, [conditions{ci}, '.mat'])); % include stat
+
+    % pos clusters
+    for cli = 1:length(stat.posclusters)
+        if stat.posclusters(cli).prob >= alpha
+            break
+        end
+
+        load(fullfile(data_erp_dir, [conditions{ci}, '_pos', num2str(cli), '.mat'])); % include data
+        data.erp_exp.mask = data.mask;
+
+        % fig - ERP
+        fig = figure('Visible', 'off');
+        
+        cfg = [];
+        cfg.maskparameter = 'mask';
+        cfg.maskstyle     = 'box';
+        cfg.maskfacealpha = 0.2;
+        cfg.linewidth     = 1.5;
+        cfg.graphcolor    = 'br';
+        
+        ft_singleplotER(cfg, data.erp_exp, data.erp_nov);
+
+        h = findobj(gca, 'Type', 'line');
+        if length(h) >= 2
+            legend(h(2:-1:1), {'Exp', 'Inexp'}, 'Location', 'southeast');
+        end
+        
+        xlabel('Time (s)');
+        ylabel('Amplitude (uV)');
+        
+        save_name = fullfile(res_dir, [conditions{ci}, '_pos', num2str(cli), '_erp.jpg']);
+        saveas(fig, save_name);
+        close(fig);
+
+        % fig - chan
+        fig = figure('Visible', 'off');
+
+        tmp_stat = stat;
+        tmp_stat.stat = zeros(size(stat.stat));
+
+        cfg = [];
+        cfg.parameter = 'stat';
+        cfg.layout    = 'easycapM11.mat';
+        % Style settings for the blank map
+        cfg.style     = 'blank';
+        cfg.comment    = 'on';
+        cfg.colorbar   = 'no';
+        cfg.markers    = 'on';
+        cfg.markersize = 3;
+        % Highlight settings
+        cfg.highlight          = 'on';
+        cfg.highlightchannel   = data.erp_exp.label;
+        cfg.highlightsymbol    = 'o';
+        cfg.highlightcolor     = [1 0 0]; % Red
+        cfg.highlightsize      = 10;
+        cfg.highlightlinewidth = 2;
+        
+        ft_topoplotER(cfg, tmp_stat);
+
+        save_name = fullfile(res_dir, [conditions{ci}, '_pos', num2str(cli), '_chan.jpg']);
+        saveas(fig, save_name);
+        close(fig);
+    end
+
+    % neg clusters
+    for cli = 1:length(stat.negclusters)
+        if stat.negclusters(cli).prob >= alpha
+            break
+        end
+
+        load(fullfile(data_erp_dir, [conditions{ci}, '_neg', num2str(cli), '.mat'])); % include data
+        data.erp_exp.mask = data.mask;
+
+        % fig - ERP
+        fig = figure('Visible', 'off');
+        
+        cfg = [];
+        cfg.maskparameter = 'mask';
+        cfg.maskstyle     = 'box';
+        cfg.maskfacealpha = 0.2;
+        cfg.linewidth     = 1.5;
+        cfg.graphcolor    = 'br';
+        
+        ft_singleplotER(cfg, data.erp_exp, data.erp_nov);
+
+        h = findobj(gca, 'Type', 'line');
+        if length(h) >= 2
+            legend(h(2:-1:1), {'Exp', 'Inexp'}, 'Location', 'southeast');
+        end
+        
+        xlabel('Time (s)');
+        ylabel('Amplitude (uV)');
+        
+        save_name = fullfile(res_dir, [conditions{ci}, '_neg', num2str(cli), '_erp.jpg']);
+        saveas(fig, save_name);
+        close(fig);
+
+        % fig - chan
+        fig = figure('Visible', 'off');
+
+        tmp_stat = stat;
+        tmp_stat.stat = zeros(size(stat.stat));
+
+        cfg = [];
+        cfg.parameter = 'stat';
+        cfg.layout    = 'easycapM11.mat';
+        % Style settings for the blank map
+        cfg.style     = 'blank';
+        cfg.comment    = 'on';
+        cfg.colorbar   = 'no';
+        cfg.markers    = 'on';
+        cfg.markersize = 3;
+        % Highlight settings
+        cfg.highlight          = 'on';
+        cfg.highlightchannel   = data.erp_exp.label;
+        cfg.highlightsymbol    = 'o';
+        cfg.highlightcolor     = [1 0 0]; % Red
+        cfg.highlightsize      = 10;
+        cfg.highlightlinewidth = 2;
+        
+        ft_topoplotER(cfg, tmp_stat);
+
+        save_name = fullfile(res_dir, [conditions{ci}, '_neg', num2str(cli), '_chan.jpg']);
         saveas(fig, save_name);
         close(fig);
     end
