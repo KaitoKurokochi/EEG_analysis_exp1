@@ -29,17 +29,19 @@ for ci = 1:length(conditions)
     % statistics
     cfg = [];
     cfg.latency          = [0.0 0.6];
-    cfg.method           = 'montecarlo';
+    cfg.method           = 'ft_statistics_montecarlo';
     cfg.statistic        = 'ft_statfun_indepsamplesT'; 
     cfg.correctm         = 'cluster';
-    cfg.clusteralpha     = 0.01;
-    cfg.clusterstatistic = 'maxsum';
+    cfg.clusteralpha     = 0.01; 
+    cfg.clustertail      = 0; % plus and minus
+    cfg.clusterstatistic = 'maxsum'; % set sum
+    cfg.clusterthreshold = 'nonparametric_common';
     cfg.minnbchan        = 4;
-    cfg.tail             = 0;
-    cfg.clustertail      = 0;
-    cfg.alpha            = 0.05;
+    cfg.tail             = 0; % two-sided test
+    cfg.alpha            = 0.025; % for two-sided test
     cfg.numrandomization = 10000;
     cfg.neighbours       = neighbours;
+    cfg.computeprob      = 'yes';
     % design
     n_trl_exp = size(data_exp.trial, 2);
     n_trl_nov = size(data_nov.trial, 2);
@@ -144,14 +146,14 @@ for ci = 1:length(conditions)
         cfg.maskstyle     = 'box';
         cfg.maskfacealpha = 0.2;
         cfg.linewidth     = 1.5;
-        cfg.graphcolor    = 'br';
+        cfg.linecolor     = 'br';
         cfg.title         = [conditions{ci}, ' ', current_chan];
         
         ft_singleplotER(cfg, data_exp, data_nov);
 
         h = findobj(gca, 'Type', 'line');
         if length(h) >= 2
-            legend(h(2:-1:1), {'Exp', 'Inexp'}, 'Location', 'southeast');
+            legend(h(2:-1:1), {'Exp', 'Nov'}, 'Location', 'southeast');
         end
         
         xlabel('Time (s)');
@@ -286,17 +288,21 @@ for ci = 1:length(conditions)
         cfg.maskstyle     = 'box';
         cfg.maskfacealpha = 0.2;
         cfg.linewidth     = 1.5;
-        cfg.graphcolor    = 'br';
+        cfg.linecolor     = 'br';
+        cfg.interactive   = 'no';
+        cfg.title         = ' ';
         
         ft_singleplotER(cfg, data.erp_exp, data.erp_nov);
 
         h = findobj(gca, 'Type', 'line');
         if length(h) >= 2
-            legend(h(2:-1:1), {'Exp', 'Inexp'}, 'Location', 'southeast');
+            legend(h(2:-1:1), {'Exp', 'Nov'}, 'Location', 'southeast');
         end
         
         xlabel('Time (s)');
         ylabel('Amplitude (uV)');
+        grid on;
+        set(gca, 'FontSize', 16);
         
         save_name = fullfile(res_dir, [conditions{ci}, '_pos', num2str(cli), '_erp.jpg']);
         saveas(fig, save_name);
@@ -313,7 +319,7 @@ for ci = 1:length(conditions)
         cfg.layout    = 'easycapM11.mat';
         % Style settings for the blank map
         cfg.style     = 'blank';
-        cfg.comment    = 'on';
+        cfg.comment    = 'no';
         cfg.colorbar   = 'no';
         cfg.markers    = 'on';
         cfg.markersize = 3;
@@ -349,17 +355,21 @@ for ci = 1:length(conditions)
         cfg.maskstyle     = 'box';
         cfg.maskfacealpha = 0.2;
         cfg.linewidth     = 1.5;
-        cfg.graphcolor    = 'br';
+        cfg.linecolor     = 'br';
+        cfg.interactive   = 'no';
+        cfg.title         = ' ';
         
         ft_singleplotER(cfg, data.erp_exp, data.erp_nov);
 
         h = findobj(gca, 'Type', 'line');
         if length(h) >= 2
-            legend(h(2:-1:1), {'Exp', 'Inexp'}, 'Location', 'southeast');
+            legend(h(2:-1:1), {'Exp', 'Nov'}, 'Location', 'southeast');
         end
         
         xlabel('Time (s)');
         ylabel('Amplitude (uV)');
+        grid on;
+        set(gca, 'FontSize', 16);
         
         save_name = fullfile(res_dir, [conditions{ci}, '_neg', num2str(cli), '_erp.jpg']);
         saveas(fig, save_name);
@@ -376,7 +386,7 @@ for ci = 1:length(conditions)
         cfg.layout    = 'easycapM11.mat';
         % Style settings for the blank map
         cfg.style     = 'blank';
-        cfg.comment    = 'on';
+        cfg.comment    = 'no';
         cfg.colorbar   = 'no';
         cfg.markers    = 'on';
         cfg.markersize = 3;
