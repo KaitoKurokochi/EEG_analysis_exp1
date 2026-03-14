@@ -47,18 +47,18 @@ for ci = 1:length(conditions)
             cfg.statistic        = 'ft_statfun_indepsamplesT';
             cfg.correctm         = 'cluster';
             cfg.clusteralpha     = 0.01;
-            cfg.clusterstatistic = 'maxsize';
+            cfg.clustertail      = 0;
+            cfg.clusterstatistic = 'maxsum';
             cfg.clusterthreshold = 'nonparametric_common';
             cfg.minnbchan        = 4;
             cfg.tail             = 0;
-            cfg.clustertail      = 0;
-            cfg.alpha            = 0.05;
-            cfg.correcttail      = 'alpha';
+            cfg.alpha            = 0.025; % for two-sided test
             cfg.numrandomization = 10000;
             cfg.latency          = [t-0.001, t+0.001]; % t, around 2ms;
             cfg.frequency        = bands{bi, 1};
             cfg.numrandomization = 10000;
             cfg.neighbours       = neighbours;
+            cfg.computeprob      = 'yes';
             % design
             n_trl_exp = size(freq_exp.powspctrm, 1);
             n_trl_nov = size(freq_nov.powspctrm, 1);
@@ -202,21 +202,36 @@ for ci = 1:length(conditions)
 
             % figure
             cfg = [];
-            cfg.colorbar           = 'yes';
+            cfg.colorbar           = 'no';
             cfg.layout             = 'easycapM11.mat';
             cfg.colormap           = 'jet';
             cfg.zlim               = [-vals.mx_abs(bi), vals.mx_abs(bi)];
-            % diff
+            cfg.comment            = 'no';
+            cfg.title              = ' ';
             cfg.highlight          = 'on';
             cfg.highlightchannel   = find(stat.mask);
-            cfg.highlightsymbol    = '*';
+            cfg.highlightsymbol    = '*'; % recorded as line object
             cfg.highlightcolor     = [0 0 0];
             cfg.highlightsize      = 10;
-            cfg.highlightfontsize  = 12;
     
             fig = figure('Visible', 'off');
             ft_topoplotTFR(cfg, freq_diff);
-            title([conditions{ci}, ' : ', bands{bi, 2}, ', ' num2str(t*1000) ' (pos: exp, neg: nov)']);
+
+            % make mark bold and large
+            h_star = findobj(gca, 'Type', 'line', 'Marker', '*');
+            
+            if ~isempty(h_star)
+                % For line-based markers, 'LineWidth' controls the thickness
+                set(h_star, 'LineWidth',  2);  % Default is usually 0.5. Try 2 or 3.
+                set(h_star, 'MarkerSize', 24); % Adjust overall size (replaces highlightsize)
+                set(h_star, 'Color', [0 0 0]); % Ensure it's black
+                
+                % Update the figure
+                drawnow;
+            else
+                warning('Asterisk marker not found.');
+            end
+            % title([conditions{ci}, ' : ', bands{bi, 2}, ', ' num2str(t*1000) ' (pos: exp, neg: nov)']);
 
             % save
             saveas(fig, fullfile(res_dir, [conditions{ci}, '_', bands{bi, 2}, '_', num2str(t*1000) '.jpg']));
