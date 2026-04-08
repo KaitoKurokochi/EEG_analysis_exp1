@@ -153,7 +153,7 @@ for ci = 1:length(conditions)
 
         h = findobj(gca, 'Type', 'line');
         if length(h) >= 2
-            legend(h(2:-1:1), {'Exp', 'Nov'}, 'Location', 'southeast');
+            legend(h(end:-1:1), 'Location', 'eastoutside');
         end
         
         xlabel('Time (s)');
@@ -260,6 +260,7 @@ config;
 
 data_erp_dir = fullfile(prj_dir, 'result', 'stat_erp_cond_cluster');
 data_stat_dir = fullfile(prj_dir, 'result', 'stat_erp_cbpt');
+data_rt_dir  = fullfile(prj_dir, 'result', 'stat_rt');
 res_dir = fullfile(prj_dir, 'result', 'fig_stat_erp_cond_cluster');
 alpha = 0.05;
 
@@ -267,9 +268,15 @@ if ~exist(res_dir, 'dir')
     mkdir(res_dir);
 end
 
+% load RT data and compute group means
+load(fullfile(data_rt_dir, 'exp.mat')); % loads 'exp'
+load(fullfile(data_rt_dir, 'nov.mat')); % loads 'nov'
+mean_rt_exp = mean(exp.m_rt);
+mean_rt_nov = mean(nov.m_rt);
+
 for ci = 1:length(conditions)
     % load stat
-    load(fullfile(data_stat_dir, [conditions{ci}, '.mat'])); % include stat
+    load(fullfile(data_stat_dir, [conditions{ci}, '.mat']));
 
     % pos clusters
     for cli = 1:length(stat.posclusters)
@@ -277,12 +284,12 @@ for ci = 1:length(conditions)
             break
         end
 
-        load(fullfile(data_erp_dir, [conditions{ci}, '_pos', num2str(cli), '.mat'])); % include data
+        load(fullfile(data_erp_dir, [conditions{ci}, '_pos', num2str(cli), '.mat']));
         data.erp_exp.mask = data.mask;
 
         % fig - ERP
         fig = figure('Visible', 'off');
-        
+
         cfg = [];
         cfg.maskparameter = 'mask';
         cfg.maskstyle     = 'box';
@@ -291,19 +298,40 @@ for ci = 1:length(conditions)
         cfg.linecolor     = 'br';
         cfg.interactive   = 'no';
         cfg.title         = ' ';
-        
-        ft_singleplotER(cfg, data.erp_exp, data.erp_nov);
 
-        h = findobj(gca, 'Type', 'line');
-        if length(h) >= 2
-            legend(h(2:-1:1), {'Exp', 'Nov'}, 'Location', 'southeast');
+        ft_singleplotER(cfg, data.erp_exp, data.erp_nov);
+        if strcmp(conditions{ci}, 'go')
+            yl = ylim;
+            line([mean_rt_exp mean_rt_exp], yl, ...
+                'Color', 'b', 'LineStyle', '--', 'LineWidth', 1.5);
+            line([mean_rt_nov mean_rt_nov], yl, ...
+                'Color', 'r', 'LineStyle', '--', 'LineWidth', 1.5);
         end
-        
+
+        % if strcmp(conditions{ci}, 'go')
+        %     yl = ylim;
+        %     line([mean_rt_exp mean_rt_exp], yl, ...
+        %         'Color', 'b', 'LineStyle', '--', 'LineWidth', 1.5);
+        %     line([mean_rt_nov mean_rt_nov], yl, ...
+        %         'Color', 'r', 'LineStyle', '--', 'LineWidth', 1.5);
+        % 
+        %     h = findobj(gca, 'Type', 'line');
+        %     legend(h(end:-1:1), {'Exp', 'Nov', ...
+        %         sprintf('Exp RT (%.3fs)', mean_rt_exp), ...
+        %         sprintf('Nov RT (%.3fs)', mean_rt_nov)}, ...
+        %         'Location', 'eastoutside');
+        % else
+        %     h = findobj(gca, 'Type', 'line');
+        %     if length(h) >= 2
+        %         legend(h(2:-1:1), {'Exp', 'Nov'}, 'Location', 'southeast');
+        %     end
+        % end
+
         xlabel('Time (s)');
         ylabel('Amplitude (uV)');
         grid on;
         set(gca, 'FontSize', 16);
-        
+
         save_name = fullfile(res_dir, [conditions{ci}, '_pos', num2str(cli), '_erp.jpg']);
         saveas(fig, save_name);
         close(fig);
@@ -317,20 +345,18 @@ for ci = 1:length(conditions)
         cfg = [];
         cfg.parameter = 'stat';
         cfg.layout    = 'easycapM11.mat';
-        % Style settings for the blank map
         cfg.style     = 'blank';
         cfg.comment    = 'no';
         cfg.colorbar   = 'no';
         cfg.markers    = 'on';
         cfg.markersize = 3;
-        % Highlight settings
         cfg.highlight          = 'on';
         cfg.highlightchannel   = data.erp_exp.label;
         cfg.highlightsymbol    = 'o';
-        cfg.highlightcolor     = [1 0 0]; % Red
+        cfg.highlightcolor     = [1 0 0];
         cfg.highlightsize      = 10;
         cfg.highlightlinewidth = 2;
-        
+
         ft_topoplotER(cfg, tmp_stat);
 
         save_name = fullfile(res_dir, [conditions{ci}, '_pos', num2str(cli), '_chan.jpg']);
@@ -344,12 +370,12 @@ for ci = 1:length(conditions)
             break
         end
 
-        load(fullfile(data_erp_dir, [conditions{ci}, '_neg', num2str(cli), '.mat'])); % include data
+        load(fullfile(data_erp_dir, [conditions{ci}, '_neg', num2str(cli), '.mat']));
         data.erp_exp.mask = data.mask;
 
         % fig - ERP
         fig = figure('Visible', 'off');
-        
+
         cfg = [];
         cfg.maskparameter = 'mask';
         cfg.maskstyle     = 'box';
@@ -358,19 +384,40 @@ for ci = 1:length(conditions)
         cfg.linecolor     = 'br';
         cfg.interactive   = 'no';
         cfg.title         = ' ';
-        
-        ft_singleplotER(cfg, data.erp_exp, data.erp_nov);
 
-        h = findobj(gca, 'Type', 'line');
-        if length(h) >= 2
-            legend(h(2:-1:1), {'Exp', 'Nov'}, 'Location', 'southeast');
+        ft_singleplotER(cfg, data.erp_exp, data.erp_nov);
+        if strcmp(conditions{ci}, 'go')
+            yl = ylim;
+            line([mean_rt_exp mean_rt_exp], yl, ...
+                'Color', 'b', 'LineStyle', '--', 'LineWidth', 1.5);
+            line([mean_rt_nov mean_rt_nov], yl, ...
+                'Color', 'r', 'LineStyle', '--', 'LineWidth', 1.5);
         end
-        
+
+        % if strcmp(conditions{ci}, 'go')
+        %     yl = ylim;
+        %     line([mean_rt_exp mean_rt_exp], yl, ...
+        %         'Color', 'b', 'LineStyle', '--', 'LineWidth', 1.5);
+        %     line([mean_rt_nov mean_rt_nov], yl, ...
+        %         'Color', 'r', 'LineStyle', '--', 'LineWidth', 1.5);
+        % 
+        %     h = findobj(gca, 'Type', 'line');
+        %     legend(h(end:-1:1), {'Exp', 'Nov', ...
+        %         sprintf('Exp RT (%.3fs)', mean_rt_exp), ...
+        %         sprintf('Nov RT (%.3fs)', mean_rt_nov)}, ...
+        %         'Location', 'eastoutside');
+        % else
+        %     h = findobj(gca, 'Type', 'line');
+        %     if length(h) >= 2
+        %         legend(h(2:-1:1), {'Exp', 'Nov'}, 'Location', 'southeast');
+        %     end
+        % end
+
         xlabel('Time (s)');
         ylabel('Amplitude (uV)');
         grid on;
         set(gca, 'FontSize', 16);
-        
+
         save_name = fullfile(res_dir, [conditions{ci}, '_neg', num2str(cli), '_erp.jpg']);
         saveas(fig, save_name);
         close(fig);
@@ -384,20 +431,18 @@ for ci = 1:length(conditions)
         cfg = [];
         cfg.parameter = 'stat';
         cfg.layout    = 'easycapM11.mat';
-        % Style settings for the blank map
         cfg.style     = 'blank';
         cfg.comment    = 'no';
         cfg.colorbar   = 'no';
         cfg.markers    = 'on';
         cfg.markersize = 3;
-        % Highlight settings
         cfg.highlight          = 'on';
         cfg.highlightchannel   = data.erp_exp.label;
         cfg.highlightsymbol    = 'o';
-        cfg.highlightcolor     = [1 0 0]; % Red
+        cfg.highlightcolor     = [1 0 0];
         cfg.highlightsize      = 10;
         cfg.highlightlinewidth = 2;
-        
+
         ft_topoplotER(cfg, tmp_stat);
 
         save_name = fullfile(res_dir, [conditions{ci}, '_neg', num2str(cli), '_chan.jpg']);
