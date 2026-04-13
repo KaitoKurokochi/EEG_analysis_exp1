@@ -68,6 +68,13 @@ for g = 1:length(groups)
             cfg = ft_definetrial(cfg);
             data = ft_redefinetrial(cfg, data);
 
+            % down sampling rate
+            disp('--- resampling ---');
+            cfg = [];
+            cfg.resamplefs = 256;
+            cfg.detrend    = 'no';
+            data = ft_resampledata(cfg, data);
+
             % baseline correction (-100 - 0 ms)
             disp('--- baseline correction ---');
             cfg = [];
