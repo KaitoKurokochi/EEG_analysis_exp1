@@ -106,7 +106,7 @@ for i = 1:length(groups)
             fig = figure('Position', [100, 100, 1600, 1200], 'Visible', 'off');
             % multiplot
             cfg = [];
-            cfg.layout        = 'easycapM11.lay';
+            cfg.layout        = 'easycapM11.mat';
             cfg.linewidth     = 1.0;
             ft_multiplotER(cfg, data);
 

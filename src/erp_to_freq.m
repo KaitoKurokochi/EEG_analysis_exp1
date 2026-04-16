@@ -21,7 +21,7 @@ for gi = 1:length(groups)
         cfg.keeptrials  = 'yes';
         cfg.foi         = logspace(log10(3),log10(90),30);
         cfg.width       = logspace(log10(3),log10(30),30); % num of cycles
-        cfg.toi         = data.time{1}(1) : 0.05 : data.time{1}(end); % interval: 50ms
+        cfg.toi         = round((data.time{1}(1) : 0.05 : data.time{1}(end)) * data.fsample) / data.fsample;
         freq = ft_freqanalysis(cfg, data);
 
         % baseline correction 

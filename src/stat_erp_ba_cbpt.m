@@ -1,4 +1,4 @@
-% statistics: cluster-based permutation test of ERP for each condition 
+l% statistics: cluster-based permutation test of ERP for each condition 
 % divided by BA (cite:
 % https://www.sciencedirect.com/science/article/pii/S1053811909001475)
 
