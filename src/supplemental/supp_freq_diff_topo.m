@@ -8,7 +8,7 @@
 %   Row 1 (Go):        Exp - Nov power diff, CBPT significance shown as *
 %   Row 2 (No-Go):     Exp - Nov power diff, CBPT significance shown as *
 %   Row 3 (Go-No-Go):  Row 1 minus Row 2 (no CBPT)
-%   Columns: 0, 50, 100, ..., 550 ms
+%   Columns: 0, 50, 100, ..., 500 ms
 
 clear;
 config;
@@ -28,8 +28,8 @@ bands = { ...
     [60 90], 'High_gamma'};
 n_bands = size(bands, 1);
 
-times = 0:0.05:0.55;
-n_t   = length(times); % 12
+times = 0:0.05:0.5;
+n_t   = length(times); % 11
 
 disp('--- loading freq data ---');
 load(fullfile(freq_data_dir, 'exp_go.mat'));   freq_exp_go   = freq; clear freq;

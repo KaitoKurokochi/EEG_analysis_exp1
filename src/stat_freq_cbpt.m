@@ -38,7 +38,7 @@ for ci = 1:length(conditions)
 
     % each band, each time
     for bi = 1:length(bands)
-        for t = 0:0.05:0.55
+        for t = 0:0.05:0.5
             % statistics
             cfg = [];
             cfg.channel          = {'all', '-EOG'};
@@ -108,8 +108,8 @@ for ci = 1:length(conditions)
 
     % each band, each time
     for bi = 1:length(bands)
-        for t = 0:0.05:0.55
-            % extract data (band, time) 
+        for t = 0:0.05:0.5
+            % extract data (band, time)
             cfg = [];
             cfg.frequency   = bands{bi, 1};
             cfg.latency     = [t-0.001, t+0.001]; % t, around 2ms;
@@ -162,7 +162,7 @@ bands = { ...
     [30 45], 'Low_gamma',  [0 12.5*10^-4]; ...
     [60 90], 'High_gamma', [0 5*10^-6]};
 
-times = 0:0.05:0.55;
+times = 0:0.05:0.5;
 n_times = length(times);
 
 % prevent any figure from becoming visible (ft_topoplotTFR may call figure internally)

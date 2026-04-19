@@ -62,7 +62,7 @@ for gi = 1:length(groups)
         load(fullfile(data_dir, [groups{gi}, '_', conditions{ci}, '.mat'])); % include freq
 
         % for each 50ms
-        for t = 0:0.05:0.55
+        for t = 0:0.05:0.5
             for bi = 1:length(bands)
                 % select data
                 cfg = [];
@@ -114,7 +114,7 @@ for gi = 1:length(groups)
         load(fullfile(data_dir, [groups{gi}, '_', conditions{ci}, '.mat'])); % include freq
 
         % for each 50ms
-        for t = 0:0.05:0.55
+        for t = 0:0.05:0.5
             for bi = 1:length(bands)
                 % select data
                 cfg = [];

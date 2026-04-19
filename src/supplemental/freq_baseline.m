@@ -1,5 +1,5 @@
 % freq baseline -> baseline correction of frequency data 
-% the time range of the result is [0.0 0.6]
+% the time range of the result is [0.0 0.5]
 clear;
 config; 
 
@@ -20,7 +20,7 @@ for gi = 1:length(groups)
         load(fname); % include freq
 
         cfg = [];
-        cfg.latency     = [0.0 0.6];
+        cfg.latency     = [0.0 0.5];
         freq = ft_selectdata(cfg, freq);
 
         time_sum = sum(freq.powspctrm, 4); % to rep x chan x freq x 1
@@ -55,7 +55,7 @@ for gi = 1:length(groups)
         freq = ft_freqbaseline(cfg, freq);
 
         cfg = [];
-        cfg.latency     = [0.0 0.6];
+        cfg.latency     = [0.0 0.5];
         freq = ft_selectdata(cfg, freq);
 
         save(fullfile(res_dir, [groups{gi}, '_', conditions{ci}, '_bl_', baseline_type, '.mat']), 'freq', '-v7.3');
@@ -120,7 +120,7 @@ for gi = 1:length(groups)
         load(fullfile(data_dir, [groups{gi}, '_', conditions{ci}, '_bl_', baseline_type, '.mat'])); % include freq
 
         % for each 50ms
-        for t = 0:0.05:0.55
+        for t = 0:0.05:0.5
             for b = 2:length(bands)
                 % select data
                 cfg = [];
