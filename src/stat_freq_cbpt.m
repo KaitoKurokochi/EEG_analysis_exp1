@@ -146,7 +146,7 @@ clear;
 config;
 
 stat_data_dir = fullfile(prj_dir, 'result', 'stat_freq_cbpt'); % set data dir
-freq_data_dir = fullfile(prj_dir, 'result', 'freq_group_cond'); 
+freq_data_dir = fullfile(prj_dir, 'result', 'freq_group_cond');
 res_dir = fullfile(prj_dir, 'result', 'fig_stat_freq_cbpt_topo'); % set res dir
 if ~exist(res_dir, 'dir')
     mkdir(res_dir);
@@ -162,32 +162,48 @@ bands = { ...
     [30 45], 'Low_gamma',  [0 12.5*10^-4]; ...
     [60 90], 'High_gamma', [0 5*10^-6]};
 
-% stat 
+times = 0:0.05:0.55;
+n_times = length(times);
+
+% prevent any figure from becoming visible (ft_topoplotTFR may call figure internally)
+set(0, 'DefaultFigureVisible', 'off');
+
 for ci = 1:length(conditions)
     % read data
     disp('--- loading freq data ---');
-    % exp freq
     load(fullfile(freq_data_dir, ['exp_', conditions{ci}, '.mat'])); % include freq
     freq_exp = freq;
     clear freq;
-    % nov ERP
     load(fullfile(freq_data_dir, ['nov_', conditions{ci}, '.mat'])); % include freq
     freq_nov = freq;
     clear freq;
 
-    % each band, each time
     for bi = 1:length(bands)
-        for t = 0:0.05:0.55
-            % extract data (band, time) 
+        fig = figure('Position', [0 0 n_times*180 220]);
+
+        % pre-calculate subplot positions with room for colorbar
+        sp_pos = zeros(n_times, 4);
+        for ti = 1:n_times
+            ax = subplot(1, n_times, ti, 'Parent', fig);
+            pos = get(ax, 'Position');
+            pos(3) = pos(3) * 0.85;
+            sp_pos(ti,:) = pos;
+            delete(ax);
+        end
+
+        for ti = 1:n_times
+            t = times(ti);
+
+            % extract data (band, time)
             cfg = [];
-            cfg.frequency   = bands{bi, 1};
-            cfg.latency     = [t-0.001, t+0.001]; % t, around 2ms;
+            cfg.frequency = bands{bi, 1};
+            cfg.latency   = [t-0.001, t+0.001];
             freq_exp_b_t = ft_selectdata(cfg, freq_exp);
             freq_nov_b_t = ft_selectdata(cfg, freq_nov);
 
             % calculate average
             cfg = [];
-            cfg.keeptrials    = 'no';
+            cfg.keeptrials = 'no';
             freq_exp_b_t_avg = ft_freqdescriptives(cfg, freq_exp_b_t);
             freq_nov_b_t_avg = ft_freqdescriptives(cfg, freq_nov_b_t);
 
@@ -198,9 +214,10 @@ for ci = 1:length(conditions)
             freq_diff = ft_math(cfg, freq_exp_b_t_avg, freq_nov_b_t_avg); % pos: exp, neg: nov
 
             % load stat data
-            load(fullfile(stat_data_dir, [conditions{ci}, '_', bands{bi, 2}, '_', num2str(t*1000), '.mat'])); % include stat
+            load(fullfile(stat_data_dir, [conditions{ci}, '_', bands{bi, 2}, '_', num2str(t*1000), '.mat']));
 
-            % figure
+            % draw into temporary figure (ft_topoplotTFR doesn't work well inside subplot directly)
+            tmp_fig = figure();
             cfg = [];
             cfg.colorbar           = 'no';
             cfg.layout             = 'easycapM11.mat';
@@ -210,32 +227,28 @@ for ci = 1:length(conditions)
             cfg.title              = ' ';
             cfg.highlight          = 'on';
             cfg.highlightchannel   = find(stat.mask);
-            cfg.highlightsymbol    = '*'; % recorded as line object
+            cfg.highlightsymbol    = '*';
             cfg.highlightcolor     = [0 0 0];
-            cfg.highlightsize      = 10;
-    
-            fig = figure('Visible', 'off');
+            cfg.highlightsize      = 6;
             ft_topoplotTFR(cfg, freq_diff);
 
-            % make mark bold and large
-            h_star = findobj(gca, 'Type', 'line', 'Marker', '*');
-            
-            if ~isempty(h_star)
-                % For line-based markers, 'LineWidth' controls the thickness
-                set(h_star, 'LineWidth',  2);  % Default is usually 0.5. Try 2 or 3.
-                set(h_star, 'MarkerSize', 24); % Adjust overall size (replaces highlightsize)
-                set(h_star, 'Color', [0 0 0]); % Ensure it's black
-                
-                % Update the figure
-                drawnow;
-            else
-                warning('Asterisk marker not found.');
-            end
-            % title([conditions{ci}, ' : ', bands{bi, 2}, ', ' num2str(t*1000) ' (pos: exp, neg: nov)']);
-
-            % save
-            saveas(fig, fullfile(res_dir, [conditions{ci}, '_', bands{bi, 2}, '_', num2str(t*1000) '.jpg']));
-            close(fig);
+            % copy axes into main figure and reposition
+            new_ax = copyobj(gca, fig);
+            set(new_ax, 'Position', sp_pos(ti,:));
+            title(new_ax, sprintf('%d ms', round(t*1000)));
+            close(tmp_fig);
         end
+
+        % add colorbar on the far right
+        ax_cb = axes('Parent', fig, 'Position', [0.94, 0.15, 0.01, 0.7], 'Visible', 'off');
+        colormap(ax_cb, jet);
+        set(ax_cb, 'CLim', [-vals.mx_abs(bi), vals.mx_abs(bi)]);
+        cb = colorbar(ax_cb);
+        cb.Position = [0.94, 0.15, 0.02, 0.7];
+
+        saveas(fig, fullfile(res_dir, [conditions{ci}, '_', bands{bi, 2}, '.jpg']));
+        close(fig);
     end
 end
+
+set(0, 'DefaultFigureVisible', 'on');
