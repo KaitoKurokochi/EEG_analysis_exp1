@@ -90,7 +90,12 @@ for ci = 1:length(conditions)
         time_idx = find(any(cluster_mask, 1));
         time_range = stat.time(time_idx);
 
-        % extract (time x chan) 
+        % skip clusters shorter than 50ms
+        if isempty(time_range) || (time_range(end) - time_range(1)) < 0.05
+            continue
+        end
+
+        % extract (time x chan)
         cfg = [];
         cfg.channel            = chan_names;
         cfg.latency            = [0.0 0.5];
@@ -112,19 +117,24 @@ for ci = 1:length(conditions)
         if stat.negclusters(cli).prob >= alpha
             break
         end
-    
+
         % extract cluster from labelmat
         cluster_mask = (stat.negclusterslabelmat == cli);
-    
+
         % find channels
         chan_idx = find(any(cluster_mask, 2));
         chan_names = stat.label(chan_idx);
-    
+
         % find time
         time_idx = find(any(cluster_mask, 1));
         time_range = stat.time(time_idx);
 
-        % extract (time x chan) 
+        % skip clusters shorter than 50ms
+        if isempty(time_range) || (time_range(end) - time_range(1)) < 0.05
+            continue
+        end
+
+        % extract (time x chan)
         cfg = [];
         cfg.channel            = chan_names;
         cfg.latency            = [0.0 0.5];
