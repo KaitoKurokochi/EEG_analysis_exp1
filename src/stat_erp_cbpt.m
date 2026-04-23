@@ -32,11 +32,11 @@ for ci = 1:length(conditions)
     cfg.method           = 'ft_statistics_montecarlo';
     cfg.statistic        = 'ft_statfun_indepsamplesT'; 
     cfg.correctm         = 'cluster';
-    cfg.clusteralpha     = 0.001; 
+    cfg.clusteralpha     = 0.01; 
     cfg.clustertail      = 0; % plus and minus
     cfg.clusterstatistic = 'maxsum'; % set sum
     cfg.clusterthreshold = 'nonparametric_common';
-    cfg.minnbchan        = 2;
+    cfg.minnbchan        = 3;
     cfg.tail             = 0; % two-sided test
     cfg.alpha            = 0.025; % for two-sided test
     cfg.numrandomization = 10000;
@@ -182,7 +182,9 @@ for ci = 1:length(conditions)
             break
         end
 
-        load(fullfile(data_erp_dir, [conditions{ci}, '_pos', num2str(cli), '.mat']));
+        fpath = fullfile(data_erp_dir, [conditions{ci}, '_pos', num2str(cli), '.mat']);
+        if ~exist(fpath, 'file'), continue; end
+        load(fpath);
         data.erp_exp.mask = data.mask;
 
         % fig - ERP
@@ -249,7 +251,9 @@ for ci = 1:length(conditions)
             break
         end
 
-        load(fullfile(data_erp_dir, [conditions{ci}, '_neg', num2str(cli), '.mat']));
+        fpath = fullfile(data_erp_dir, [conditions{ci}, '_neg', num2str(cli), '.mat']);
+        if ~exist(fpath, 'file'), continue; end
+        load(fpath);
         data.erp_exp.mask = data.mask;
 
         % fig - ERP
